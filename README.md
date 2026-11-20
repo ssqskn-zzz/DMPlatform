@@ -51,6 +51,12 @@ tests/                   # 冒烟测试
 
 | 领域 | 接口 |
 | --- | --- |
+| 治理工作台 | `GET /api/v1/workbench/overview`、`/todos`、`/foundation` |
+| 待办与变更 | `GET/POST /api/v1/workbench/work-orders`、`POST /work-orders/{code}/complete`、`POST /change-requests/{code}/approve` |
+| 语义术语 | `GET /api/v1/workbench/terms` |
+| Agent 编目 | `GET /api/v1/workbench/agents`、`POST /agents/{code}/run` |
+| 服务目录 | `GET /api/v1/workbench/services` |
+| 运行与评测 | `GET /api/v1/workbench/evaluations/latest`、`/runtime/logs`、`POST /runtime/simulate` |
 | 数据源 | `GET/POST /api/v1/datasources`、`GET/PATCH/DELETE /api/v1/datasources/{id}` |
 | 元数据目录 | `GET/POST /api/v1/datasets`、`/datasets/{id}/columns`、`/columns/{id}` |
 | 数据标准 | `GET/POST /api/v1/standards` |
@@ -59,6 +65,26 @@ tests/                   # 冒烟测试
 | 向量召回 | `POST /api/v1/semantic/search` |
 | 本体图谱 | `GET/POST /api/v1/ontology/nodes`、`POST /api/v1/ontology/relations`、`GET /api/v1/ontology/nodes/{uid}/neighborhood` |
 | 数据质量 | `GET/POST /api/v1/quality/rules`、`/rules/{id}/results` |
+
+## 治理工作台
+
+工作台页面由 FastAPI 直接托管：启动后访问 http://localhost:8000/ ，包含资产治理全景图、治理工作台待办、Agent 注册与编目、服务与权限绑定、运行监控与评测闭环、底座速览六个视图。前端调用 `/api/v1/workbench/*`，首次启动会写入演示数据（`SEED_DEMO_DATA=true`）。
+
+### 不依赖中间件本地运行
+
+没有 MySQL / ES / Neo4j 时，可用 SQLite 跑通工作台与测试：
+
+```bash
+MYSQL_DSN="sqlite+aiosqlite:////tmp/dgov.db" AUTO_CREATE_TABLES=true \
+  uvicorn dgov.main:app --port 8000
+```
+
+### 测试
+
+```bash
+pytest -q          # 后端 API 测试，使用内存 SQLite，不依赖外部服务
+ruff check src tests
+```
 
 ### 向量写入与召回
 

@@ -1,22 +1,27 @@
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from dgov.api.v1.endpoints import health
 from dgov.api.v1.router import api_router
 from dgov.core.config import settings
-from dgov.core.db import dispose_db, init_db
+from dgov.core.db import SessionFactory, dispose_db, init_db
 from dgov.core.es import close_es, ensure_semantic_index
 from dgov.core.exceptions import AppError
 from dgov.core.graph import close_graph, ensure_graph_schema
+from dgov.services.governance import seed_demo_data
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s %(levelname)s [%(name)s] %(message)s"
 )
 logger = logging.getLogger(__name__)
+
+STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 
 async def _best_effort(name: str, step) -> None:
@@ -26,9 +31,17 @@ async def _best_effort(name: str, step) -> None:
         logger.warning("%s initialization skipped: %s", name, exc)
 
 
+async def _seed_governance() -> None:
+    if not settings.seed_demo_data:
+        return
+    async with SessionFactory() as session:
+        await seed_demo_data(session)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await _best_effort("mysql", init_db)
+    await _best_effort("governance seed", _seed_governance)
     await _best_effort("elasticsearch", ensure_semantic_index)
     await _best_effort("neo4j", ensure_graph_schema)
     yield
@@ -59,7 +72,10 @@ async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
 
 
 @app.get("/", include_in_schema=False)
-async def root() -> dict:
+async def root():
+    index = STATIC_DIR / "index.html"
+    if index.exists():
+        return FileResponse(index)
     return {
         "name": settings.app_name,
         "docs": "/docs",
@@ -67,6 +83,9 @@ async def root() -> dict:
         "api": settings.api_v1_prefix,
     }
 
+
+if STATIC_DIR.exists():
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 app.include_router(health.router)
 app.include_router(api_router, prefix=settings.api_v1_prefix)
