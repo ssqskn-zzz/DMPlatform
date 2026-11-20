@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 
-from sqlalchemy import BigInteger, DateTime, func
+from sqlalchemy import BigInteger, DateTime, Integer, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -14,7 +14,10 @@ class Base(DeclarativeBase):
 
 
 class IdMixin:
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    # SQLite only auto-increments an INTEGER PRIMARY KEY, so fall back for local/test runs.
+    id: Mapped[int] = mapped_column(
+        BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True
+    )
 
 
 class TimestampMixin:

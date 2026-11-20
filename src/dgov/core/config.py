@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     mysql_dsn: str = "mysql+aiomysql://dgov:dgov@localhost:3306/dgov?charset=utf8mb4"
     db_echo: bool = False
     auto_create_tables: bool = True
+    seed_demo_data: bool = True
 
     # Elasticsearch: semantic layer vector index
     es_url: str = "http://localhost:9200"
