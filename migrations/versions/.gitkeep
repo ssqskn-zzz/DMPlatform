@@ -1,0 +1,2 @@
+# Alembic revisions are generated with:
+#   alembic revision --autogenerate -m "initial schema"
