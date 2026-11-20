@@ -1,3 +1,4 @@
+from dgov.models.auth import AuthSession, PlatformUser
 from dgov.models.base import Base
 from dgov.models.catalog import Dataset, DatasetColumn, DataStandard
 from dgov.models.datasource import DataSource
@@ -15,6 +16,7 @@ from dgov.models.quality import QualityResult, QualityRule
 from dgov.models.semantic import SemanticAsset
 
 __all__ = [
+    "AuthSession",
     "Base",
     "ChangeRequest",
     "DataStandard",
@@ -25,6 +27,7 @@ __all__ = [
     "GovernanceAgent",
     "GovernanceService",
     "LineageEdge",
+    "PlatformUser",
     "QualityResult",
     "QualityRule",
     "RuntimeLog",

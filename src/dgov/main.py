@@ -7,13 +7,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from dgov.api.v1.endpoints import health
+from dgov.api.v1.endpoints import auth, health
 from dgov.api.v1.router import api_router
 from dgov.core.config import settings
 from dgov.core.db import SessionFactory, dispose_db, init_db
 from dgov.core.es import close_es, ensure_semantic_index
 from dgov.core.exceptions import AppError
 from dgov.core.graph import close_graph, ensure_graph_schema
+from dgov.services.auth import seed_default_users
 from dgov.services.governance import seed_demo_data
 
 logging.basicConfig(
@@ -32,10 +33,10 @@ async def _best_effort(name: str, step) -> None:
 
 
 async def _seed_governance() -> None:
-    if not settings.seed_demo_data:
-        return
     async with SessionFactory() as session:
-        await seed_demo_data(session)
+        await seed_default_users(session)
+        if settings.seed_demo_data:
+            await seed_demo_data(session)
 
 
 @asynccontextmanager
@@ -88,4 +89,5 @@ if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 app.include_router(health.router)
+app.include_router(auth.router, prefix=settings.api_v1_prefix)
 app.include_router(api_router, prefix=settings.api_v1_prefix)

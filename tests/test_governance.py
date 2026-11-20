@@ -178,5 +178,7 @@ async def test_workbench_page_is_served(client: AsyncClient) -> None:
     response = await client.get("/")
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/html")
-    assert "治理工作台" in response.text
-    assert "/api/v1/workbench" in response.text
+    assert "数据治理工作台" in response.text
+    assert "敬请期待功能上线......" in response.text
+    assert "/platform/modules" in response.text
+    assert "/auth/login" in response.text

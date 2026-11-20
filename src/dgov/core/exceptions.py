@@ -8,6 +8,14 @@ class BadRequestError(AppError):
     status_code = 400
 
 
+class AuthenticationError(AppError):
+    status_code = 401
+
+
+class PermissionDeniedError(AppError):
+    status_code = 403
+
+
 class NotFoundError(AppError):
     status_code = 404
 
