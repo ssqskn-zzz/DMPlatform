@@ -18,13 +18,16 @@ class DataSource(IdMixin, TimestampMixin, Base):
 
     name: Mapped[str] = mapped_column(String(128), unique=True)
     type: Mapped[str] = mapped_column(String(32), index=True)
-    host: Mapped[str] = mapped_column(String(255))
+    host: Mapped[str] = mapped_column(String(255), default="")
     port: Mapped[int] = mapped_column(Integer, default=3306)
     database: Mapped[str | None] = mapped_column(String(128), default=None)
     username: Mapped[str | None] = mapped_column(String(128), default=None)
     # TODO: encrypt at rest with a KMS/master key before production use.
     password: Mapped[str | None] = mapped_column(String(512), default=None)
     extra: Mapped[dict[str, Any] | None] = mapped_column(JSON, default=None)
+    # API sources: {"mode": "test", "test_base_url": ..., "production_base_url": ...,
+    # "endpoints": {...}, "auth_type": "none|api_key|bearer", "auth_token": ...}
+    config: Mapped[dict[str, Any] | None] = mapped_column(JSON, default=None)
     description: Mapped[str | None] = mapped_column(Text, default=None)
     status: Mapped[str] = mapped_column(String(16), default="active", index=True)
 

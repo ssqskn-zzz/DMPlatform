@@ -82,7 +82,7 @@ async def test_platform_catalog_contains_all_requested_modules(client: AsyncClie
     groups = {group["key"]: group["items"] for group in response.json()}
     assert set(groups) == {"engines", "applications", "configurations"}
     assert len(groups["engines"]) == 2
-    assert len(groups["applications"]) == 11
+    assert len(groups["applications"]) == 12
     assert len(groups["configurations"]) == 6
 
     names = {item["name"] for items in groups.values() for item in items}
@@ -100,6 +100,7 @@ async def test_platform_catalog_contains_all_requested_modules(client: AsyncClie
         "本体建模",
         "隐私权限",
         "数据服务",
+        "日志查询",
         "用户中心",
         "用户权限配置",
         "数据源配置",
@@ -108,8 +109,27 @@ async def test_platform_catalog_contains_all_requested_modules(client: AsyncClie
         "智能体配置",
     } == names
     modules = {item["id"]: item for items in groups.values() for item in items}
-    assert modules["user-center"]["implemented"] is True
-    assert all(not item.get("implemented") for key, item in modules.items() if key != "user-center")
+    implemented = {
+        module_id
+        for module_id, item in modules.items()
+        if item.get("implemented")
+    }
+    assert implemented == {
+        "asset-inventory",
+        "metadata-lineage",
+        "quality",
+        "warehouse-modeling",
+        "ontology-modeling",
+        "log-query",
+        "user-center",
+        "user-permissions",
+        "datasource-config",
+    }
+    assert all(
+        not item.get("implemented")
+        for module_id, item in modules.items()
+        if module_id not in implemented
+    )
 
 
 async def test_viewer_can_use_platform_but_cannot_manage_users(client: AsyncClient) -> None:

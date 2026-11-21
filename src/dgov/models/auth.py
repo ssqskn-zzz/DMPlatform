@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String
+from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from dgov.models.base import Base, IdMixin, TimestampMixin
@@ -27,3 +27,36 @@ class AuthSession(IdMixin, Base):
     )
     created_at: Mapped[datetime] = mapped_column(DateTime)
     expires_at: Mapped[datetime] = mapped_column(DateTime, index=True)
+
+
+class PlatformRole(IdMixin, TimestampMixin, Base):
+    __tablename__ = "platform_role"
+
+    code: Mapped[str] = mapped_column(String(32), unique=True, index=True)
+    name: Mapped[str] = mapped_column(String(64))
+    description: Mapped[str | None] = mapped_column(Text, default=None)
+    is_system: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class RolePermission(IdMixin, Base):
+    __tablename__ = "role_permission"
+    __table_args__ = (UniqueConstraint("role_id", "permission", name="uq_role_permission"),)
+
+    role_id: Mapped[int] = mapped_column(
+        ForeignKey("platform_role.id", ondelete="CASCADE"), index=True
+    )
+    permission: Mapped[str] = mapped_column(String(64), index=True)
+
+
+class UserPermissionOverride(IdMixin, TimestampMixin, Base):
+    __tablename__ = "user_permission_override"
+    __table_args__ = (
+        UniqueConstraint("user_id", "permission", name="uq_user_permission_override"),
+    )
+
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("platform_user.id", ondelete="CASCADE"), index=True
+    )
+    permission: Mapped[str] = mapped_column(String(64), index=True)
+    effect: Mapped[str] = mapped_column(String(8), default="allow")
+

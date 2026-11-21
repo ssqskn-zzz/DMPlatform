@@ -36,6 +36,21 @@ class Settings(BaseSettings):
     neo4j_database: str = "neo4j"
     neo4j_connection_timeout: float = 5.0
 
+    # Metadata collection
+    scheduler_enabled: bool = True
+    scheduler_tick_seconds: int = 15
+    seed_metadata_source: bool = True
+    mock_metadata_api_url: str = "http://127.0.0.1:8100"
+    metadata_api_timeout: float = 20.0
+
+    # Log retention: database rows are pruned, application logs rotate by size.
+    log_retention_days: int = 30
+    log_max_rows: int = 200_000
+    log_dir: str = "logs"
+    log_file_max_bytes: int = 50 * 1024 * 1024
+    log_backup_count: int = 5
+    quality_result_retention_days: int = 90
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]

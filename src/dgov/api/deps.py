@@ -11,7 +11,8 @@ from dgov.core.es import get_es
 from dgov.core.exceptions import AuthenticationError, PermissionDeniedError
 from dgov.core.graph import get_driver
 from dgov.models.auth import PlatformUser
-from dgov.services.auth import permissions_for, resolve_user
+from dgov.services import authz
+from dgov.services.auth import resolve_user
 
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 EsDep = Annotated[AsyncElasticsearch, Depends(get_es)]
@@ -35,8 +36,18 @@ CurrentUserDep = Annotated[PlatformUser, Depends(get_current_user)]
 
 
 def require_permission(permission: str) -> Callable:
-    async def checker(user: CurrentUserDep) -> PlatformUser:
-        if permission not in permissions_for(user.role):
+    async def checker(session: SessionDep, user: CurrentUserDep) -> PlatformUser:
+        if not await authz.has_permission(session, user, permission):
+            raise PermissionDeniedError("当前角色无权执行此操作")
+        return user
+
+    return checker
+
+
+def require_any_permission(*permissions: str) -> Callable:
+    async def checker(session: SessionDep, user: CurrentUserDep) -> PlatformUser:
+        granted = await authz.effective_permissions(session, user)
+        if not set(permissions) & set(granted):
             raise PermissionDeniedError("当前角色无权执行此操作")
         return user
 
@@ -44,3 +55,8 @@ def require_permission(permission: str) -> Callable:
 
 
 UserManagerDep = Annotated[PlatformUser, Depends(require_permission("users:manage"))]
+AuthzManagerDep = Annotated[PlatformUser, Depends(require_permission("authz:manage"))]
+ConfigManagerDep = Annotated[PlatformUser, Depends(require_permission("config:write"))]
+GovernanceWriterDep = Annotated[PlatformUser, Depends(require_permission("governance:write"))]
+CollectionRunnerDep = Annotated[PlatformUser, Depends(require_permission("collection:run"))]
+LogReaderDep = Annotated[PlatformUser, Depends(require_permission("logs:read"))]

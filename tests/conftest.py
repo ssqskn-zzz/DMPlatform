@@ -2,7 +2,7 @@ from collections.abc import AsyncIterator
 
 import pytest
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
 from dgov.core.db import get_session
@@ -13,8 +13,9 @@ from dgov.services.governance import seed_demo_data
 
 
 @pytest.fixture
-async def client() -> AsyncIterator[AsyncClient]:
-    """Run the API against an isolated in-memory SQLite database and seeded demo data."""
+async def db_factory() -> AsyncIterator[async_sessionmaker[AsyncSession]]:
+    """An isolated in-memory SQLite database with seeded users and demo data."""
+
     engine = create_async_engine(
         "sqlite+aiosqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
     )
@@ -25,9 +26,18 @@ async def client() -> AsyncIterator[AsyncClient]:
     async with factory() as session:
         await seed_default_users(session)
         await seed_demo_data(session)
+    yield factory
+    await engine.dispose()
+
+
+@pytest.fixture
+async def client(
+    db_factory: async_sessionmaker[AsyncSession],
+) -> AsyncIterator[AsyncClient]:
+    """Run the API against an isolated in-memory SQLite database and seeded demo data."""
 
     async def override_session() -> AsyncIterator:
-        async with factory() as session:
+        async with db_factory() as session:
             yield session
 
     app.dependency_overrides[get_session] = override_session
@@ -40,4 +50,3 @@ async def client() -> AsyncIterator[AsyncClient]:
         http_client.headers.update({"Authorization": f"Bearer {login.json()['token']}"})
         yield http_client
     app.dependency_overrides.clear()
-    await engine.dispose()

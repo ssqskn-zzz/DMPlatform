@@ -14,12 +14,16 @@ from dgov.core.db import SessionFactory, dispose_db, init_db
 from dgov.core.es import close_es, ensure_semantic_index
 from dgov.core.exceptions import AppError
 from dgov.core.graph import close_graph, ensure_graph_schema
+from dgov.core.logging import setup_logging
 from dgov.services.auth import seed_default_users
 from dgov.services.governance import seed_demo_data
+from dgov.services.metadata_seed import bootstrap_collection, seed_metadata_source
+from dgov.services.scheduler import start_scheduler, stop_scheduler
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s %(levelname)s [%(name)s] %(message)s"
 )
+setup_logging()
 logger = logging.getLogger(__name__)
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -37,18 +41,29 @@ async def _seed_governance() -> None:
         await seed_default_users(session)
         if settings.seed_demo_data:
             await seed_demo_data(session)
+        await seed_metadata_source(session)
+
+
+async def _bootstrap_metadata() -> None:
+    async with SessionFactory() as session:
+        await bootstrap_collection(session)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await _best_effort("mysql", init_db)
     await _best_effort("governance seed", _seed_governance)
+    await _best_effort("metadata bootstrap", _bootstrap_metadata)
     await _best_effort("elasticsearch", ensure_semantic_index)
     await _best_effort("neo4j", ensure_graph_schema)
-    yield
-    await close_es()
-    await close_graph()
-    await dispose_db()
+    start_scheduler()
+    try:
+        yield
+    finally:
+        await stop_scheduler()
+        await close_es()
+        await close_graph()
+        await dispose_db()
 
 
 app = FastAPI(

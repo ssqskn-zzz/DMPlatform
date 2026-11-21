@@ -10,7 +10,11 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 @router.post("/login", response_model=LoginResponse)
 async def login(payload: LoginRequest, session: SessionDep) -> LoginResponse:
     token, user, expires_at = await service.authenticate(session, payload.username, payload.password)
-    return LoginResponse(token=token, expires_at=expires_at, user=service.to_user_read(user))
+    return LoginResponse(
+        token=token,
+        expires_at=expires_at,
+        user=await service.to_user_read(session, user),
+    )
 
 
 @router.post("/logout", response_model=MessageResponse)
@@ -20,8 +24,8 @@ async def logout(session: SessionDep, token: TokenDep) -> MessageResponse:
 
 
 @router.get("/me", response_model=UserRead)
-async def me(user: CurrentUserDep) -> UserRead:
-    return service.to_user_read(user)
+async def me(session: SessionDep, user: CurrentUserDep) -> UserRead:
+    return await service.to_user_read(session, user)
 
 
 @router.post("/password", response_model=MessageResponse)
