@@ -1,9 +1,9 @@
 from datetime import datetime
-from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-Role = Literal["admin", "governance", "viewer"]
+Role = str
+ROLE_PATTERN = r"^[a-z][a-z0-9_-]{1,31}$"
 
 
 class LoginRequest(BaseModel):
@@ -39,12 +39,12 @@ class PasswordChangeRequest(BaseModel):
 class UserCreate(BaseModel):
     username: str = Field(pattern=r"^[a-zA-Z0-9_.-]{3,32}$")
     display_name: str = Field(min_length=1, max_length=64)
-    role: Role = "viewer"
+    role: Role = Field(default="viewer", pattern=ROLE_PATTERN)
 
 
 class UserUpdate(BaseModel):
     display_name: str | None = Field(default=None, min_length=1, max_length=64)
-    role: Role | None = None
+    role: Role | None = Field(default=None, pattern=ROLE_PATTERN)
     is_active: bool | None = None
 
 

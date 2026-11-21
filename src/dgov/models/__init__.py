@@ -1,37 +1,58 @@
-from dgov.models.auth import AuthSession, PlatformUser
+from dgov.models.auth import (
+    AuthSession,
+    PlatformRole,
+    PlatformUser,
+    RolePermission,
+    UserPermissionOverride,
+)
 from dgov.models.base import Base
 from dgov.models.catalog import Dataset, DatasetColumn, DataStandard
 from dgov.models.datasource import DataSource
-from dgov.models.governance import (
-    ChangeRequest,
-    EvaluationRun,
-    GovernanceAgent,
-    GovernanceService,
-    RuntimeLog,
-    SemanticTerm,
-    WorkOrder,
-)
 from dgov.models.lineage import LineageEdge
+from dgov.models.metadata import (
+    CollectionJob,
+    ColumnLineage,
+    IngestRun,
+    MetadataColumn,
+    MetadataLineage,
+    MetadataTable,
+    OntologyEntity,
+    OntologyEntityTable,
+    OntologyRelation,
+    OperationLog,
+    QualityCheckResult,
+    QualityCheckRule,
+    WarehouseModel,
+)
 from dgov.models.quality import QualityResult, QualityRule
 from dgov.models.semantic import SemanticAsset
 
 __all__ = [
     "AuthSession",
     "Base",
-    "ChangeRequest",
+    "CollectionJob",
+    "ColumnLineage",
     "DataStandard",
     "DataSource",
     "Dataset",
     "DatasetColumn",
-    "EvaluationRun",
-    "GovernanceAgent",
-    "GovernanceService",
+    "IngestRun",
     "LineageEdge",
+    "MetadataColumn",
+    "MetadataLineage",
+    "MetadataTable",
+    "OntologyEntity",
+    "OntologyEntityTable",
+    "OntologyRelation",
+    "OperationLog",
+    "PlatformRole",
     "PlatformUser",
+    "QualityCheckResult",
+    "QualityCheckRule",
     "QualityResult",
     "QualityRule",
-    "RuntimeLog",
+    "RolePermission",
     "SemanticAsset",
-    "SemanticTerm",
-    "WorkOrder",
+    "UserPermissionOverride",
+    "WarehouseModel",
 ]

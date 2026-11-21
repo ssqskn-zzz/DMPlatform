@@ -64,6 +64,38 @@ button,input,select{font:inherit}button{cursor:pointer}a{color:inherit;text-deco
 .login-side{display:flex;align-items:center;justify-content:center;padding:35px;background:rgba(255,253,248,.55);border-left:1px solid var(--line)}.login-card{width:100%;padding:34px 36px}.login-card h2{font-size:22px;margin:0 0 5px}.login-card .sub{color:var(--muted);font-size:12px;margin-bottom:26px}.login-btn{width:100%;padding:10px;margin-top:4px}.demo-accounts{margin-top:24px;padding-top:19px;border-top:1px solid var(--line)}.demo-title{font-size:11px;color:var(--muted);margin-bottom:9px}.account-list{display:flex;gap:7px}.account-chip{flex:1;border:1px solid var(--line);background:var(--paper-soft);border-radius:7px;padding:6px 3px;font-size:11px;color:#666c61}.account-chip:hover{border-color:var(--green);color:var(--green-dark)}.default-hint{font-size:11px;color:var(--muted);margin-top:10px;text-align:center}.default-hint code{color:#6d725f;background:#f2eee4;padding:1px 5px;border-radius:4px}
 .modal-backdrop{position:fixed;inset:0;background:rgba(43,45,38,.35);z-index:60;display:flex;align-items:center;justify-content:center;padding:20px}.modal{width:440px;max-width:100%;padding:24px;background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 70px rgba(43,45,38,.22)}.modal h3{margin:0 0 4px;font-size:18px}.modal .modal-sub{font-size:12px;color:var(--muted);margin-bottom:20px}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:100;background:#354137;color:#fff;padding:10px 17px;border-radius:9px;box-shadow:0 8px 30px rgba(0,0,0,.18);font-size:13px;max-width:80vw}.toast.error{background:#934c45}
+.grid-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.stat{padding:15px 17px}.stat .k{font-size:11px;color:var(--muted);letter-spacing:.3px}.stat .v{font-size:23px;font-weight:750;margin-top:3px;letter-spacing:-.5px}.stat .s{font-size:11px;color:var(--muted);margin-top:2px}
+.card{padding:20px 22px}.card + .card{margin-top:18px}
+.toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:14px 0}.toolbar .input{width:auto;min-width:170px;padding:7px 10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{border:1px solid var(--line);background:var(--paper-soft);border-radius:14px;padding:3px 10px;font-size:12px;color:#666c61}.chip:hover{border-color:var(--green);color:var(--green-dark)}.chip.active{background:var(--green-soft);border-color:#cbdcbb;color:var(--green-dark);font-weight:600}.chip b{font-weight:600;margin-left:4px;font-size:11px;opacity:.7}
+.pill{display:inline-flex;align-items:center;border-radius:10px;padding:1px 8px;font-size:11px;font-weight:600;background:#f2efe7;color:#6c7068;white-space:nowrap}
+.score{display:inline-block;min-width:40px;text-align:center;border-radius:9px;padding:1px 7px;font-size:11px;font-weight:700}.score.good{background:#e8f2dd;color:#5a7d35}.score.warn{background:#fbf1db;color:#9a7424}.score.bad{background:var(--red-soft);color:var(--red)}
+.split{display:grid;grid-template-columns:minmax(300px,370px) 1fr;gap:18px;align-items:start}
+.list{display:flex;flex-direction:column;gap:2px;max-height:640px;overflow:auto;margin-top:8px}
+.list-item{width:100%;text-align:left;border:1px solid transparent;background:transparent;border-radius:8px;padding:8px 10px;display:block}
+.list-item:hover{background:#fffcf5;border-color:var(--line)}.list-item.active{background:var(--green-soft);border-color:#d5e3c6}
+.list-item b{display:block;font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.list-item small{display:block;color:var(--muted);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.list-meta{display:flex;gap:6px;align-items:center;margin-top:5px}
+.pager{display:flex;justify-content:flex-end;align-items:center;gap:7px;padding-top:12px;color:var(--muted);font-size:12px}.pager button{border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:3px 9px;font-size:12px;color:var(--ink)}.pager button:disabled{opacity:.45;cursor:not-allowed}.pager button.active{background:var(--green);border-color:var(--green);color:#fff}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:16px 0 14px;overflow:auto}.tab{border:0;background:transparent;padding:7px 11px;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;font-size:13px}.tab.active{color:var(--green-dark);border-color:var(--green);font-weight:650}
+.graph{width:100%;overflow:auto;border:1px solid var(--line);border-radius:10px;background:linear-gradient(#fffdf8,#fbf8f0)}.graph svg{display:block}
+.meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin-bottom:12px}.meta-box{border:1px solid var(--line);border-radius:8px;padding:9px 11px;background:var(--paper-soft)}.meta-box span{display:block;font-size:11px;color:var(--muted)}.meta-box b{font-size:12.5px;word-break:break-all}
+.detail-box{margin-top:12px;border:1px solid var(--line);border-radius:9px;background:#fbfaf4;padding:12px;font-size:12px;white-space:pre-wrap;word-break:break-all;max-height:300px;overflow:auto}
+.bars{display:flex;align-items:flex-end;gap:6px;height:120px;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--paper-soft)}.bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;gap:4px}.bar i{display:block;width:100%;max-width:34px;border-radius:4px 4px 0 0;background:linear-gradient(180deg,#a7c47d,#82a953);min-height:3px}.bar em{font-size:9px;color:var(--muted);font-style:normal;white-space:nowrap}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal.wide{width:860px;max-height:88vh;overflow:auto}
+.check-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:4px;max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:9px;padding:10px;background:#fffefa}
+.check{display:flex;align-items:flex-start;gap:7px;font-size:12px;padding:3px 2px;cursor:pointer}.check input{margin-top:3px}.check span small{display:block;color:var(--muted);font-size:10px}
+.sub-head{font-size:11px;color:var(--muted);letter-spacing:.5px;margin:12px 0 6px}
+.role-perm{margin-top:12px;display:flex;flex-wrap:wrap;gap:4px}
+.step-list{display:flex;flex-direction:column;gap:10px}
+.job{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--paper-soft)}.job-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.job-head b{font-size:13.5px}.job-meta{display:flex;flex-wrap:wrap;gap:14px;color:var(--muted);font-size:11.5px;margin-top:7px}
+.switch{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.empty{padding:36px 20px;text-align:center;color:var(--muted);font-size:13px}.loading{padding:26px;text-align:center;color:var(--muted);font-size:13px}
+.table-link{color:var(--green-dark);font-weight:600;cursor:pointer}.table-link:hover{text-decoration:underline}
+.small-table th,.small-table td{padding:8px 10px}
+@media(max-width:1000px){.split{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}
 @media(hover:hover) and (min-width:821px){.nav-item:hover .dropdown{display:block}}
 @media(max-width:1100px){.topbar{padding:0 14px;gap:12px}.brand small{display:none}.nav-link{padding:0 8px}.nav-count{display:none}.workspace{padding:22px 18px}.user-grid{grid-template-columns:280px 1fr}.login-intro{padding:50px 6vw}}
 @media(max-width:820px){.topbar{height:auto;min-height:58px;flex-wrap:wrap;padding-top:7px}.main-nav{order:3;width:100%;overflow-x:auto;overflow-y:hidden;height:46px}.dropdown{position:fixed;top:105px;left:14px;right:14px;width:auto;max-height:calc(100vh - 120px)}.top-actions{margin-left:auto}.env{display:none}.user-grid{grid-template-columns:1fr}.login-page{grid-template-columns:1fr}.login-intro{display:none}.login-side{border:0;min-height:100vh}.page-heading{align-items:flex-start}.page-tag{display:none}.placeholder{min-height:440px}}
@@ -75,7 +107,7 @@ button,input,select{font:inherit}button{cursor:pointer}a{color:inherit;text-deco
     <div class="login-brand"><span class="brand-mark" data-icon="grid"></span>DataGov <span class="muted" style="font-size:12px;font-weight:500">数据治理工作台</span></div>
     <h1>让数据治理<br>清晰、可控、可持续。</h1>
     <p>以两大引擎为底座，连接数据资产、业务语义与智能体应用，构建统一的数据治理工作入口。</p>
-    <div class="login-points"><span data-icon-text="engine">两大引擎</span><span data-icon-text="apps">十一项应用</span><span data-icon-text="shield">统一权限</span></div>
+    <div class="login-points"><span data-icon-text="engine">两大引擎</span><span data-icon-text="apps">十二项应用</span><span data-icon-text="shield">统一权限</span></div>
   </div>
   <div class="login-side">
     <form id="loginForm" class="panel login-card">
@@ -118,6 +150,60 @@ button,input,select{font:inherit}button{cursor:pointer}a{color:inherit;text-deco
     <div class="form-actions"><button id="cancelCreateUser" type="button" class="btn">取消</button><button class="btn primary" type="submit">创建用户</button></div>
   </form>
 </div>
+<div id="sourceModal" class="modal-backdrop hidden">
+  <form id="sourceForm" class="modal">
+    <h3>新建 API 数据源</h3><div class="modal-sub">测试地址指向 tests/mock_metadata_api 中的固定数据</div>
+    <div class="field"><label for="sourceName">名称</label><input id="sourceName" class="input" maxlength="128" required value="元数据测试 API"></div>
+    <div class="field"><label for="sourceTestUrl">测试环境地址</label><input id="sourceTestUrl" class="input" required value="http://127.0.0.1:8100"></div>
+    <div class="field"><label for="sourceDesc">说明</label><input id="sourceDesc" class="input" maxlength="255" value="元数据测试 API（CSV 固定数据）"></div>
+    <div id="sourceError" class="form-error"></div>
+    <div class="form-actions"><button type="button" class="btn" data-close-modal="sourceModal">取消</button><button class="btn primary" type="submit">创建数据源</button></div>
+  </form>
+</div>
+<div id="jobModal" class="modal-backdrop hidden">
+  <form id="jobForm" class="modal wide">
+    <h3>采集任务调度</h3><div class="modal-sub">支持分钟、小时、天级调度，最短 1 分钟</div>
+    <input type="hidden" id="jobId">
+    <div class="form-grid">
+      <div class="field"><label for="jobName">任务名称</label><input id="jobName" class="input" maxlength="128" required value="全量元数据采集"></div>
+      <div class="field"><label for="jobEnabled">启用状态</label><select id="jobEnabled" class="input"><option value="false">停用</option><option value="true">启用</option></select></div>
+      <div class="field"><label for="jobUnit">调度单位</label><select id="jobUnit" class="input"><option value="minute">分钟</option><option value="hour">小时</option><option value="day">天</option></select></div>
+      <div class="field"><label for="jobValue">间隔数值</label><input id="jobValue" class="input" type="number" min="1" max="1440" value="1" required></div>
+    </div>
+    <div class="sub-head">采集资产</div>
+    <div class="check-grid" style="grid-template-columns:repeat(3,1fr);max-height:none">
+      <label class="check"><input type="checkbox" id="jobAssetTables" checked><span>元数据表</span></label>
+      <label class="check"><input type="checkbox" id="jobAssetColumns" checked><span>字段元数据</span></label>
+      <label class="check"><input type="checkbox" id="jobAssetLineage" checked><span>表级血缘</span></label>
+    </div>
+    <div id="jobError" class="form-error"></div>
+    <div class="form-actions"><button type="button" class="btn" data-close-modal="jobModal">取消</button><button class="btn primary" type="submit">保存任务</button></div>
+  </form>
+</div>
+<div id="roleModal" class="modal-backdrop hidden">
+  <form id="roleForm" class="modal wide">
+    <h3>角色权限配置</h3><div class="modal-sub">按模块与操作配置平台功能权限</div>
+    <input type="hidden" id="roleId">
+    <div class="form-grid">
+      <div class="field"><label for="roleCode">角色编码</label><input id="roleCode" class="input" pattern="[a-z0-9_.-]{2,32}" required></div>
+      <div class="field"><label for="roleName">角色名称</label><input id="roleName" class="input" maxlength="64" required></div>
+    </div>
+    <div class="field"><label for="roleDesc">说明</label><input id="roleDesc" class="input" maxlength="255"></div>
+    <div class="sub-head">功能权限</div>
+    <div id="rolePermGrid" class="check-grid"></div>
+    <div id="roleError" class="form-error"></div>
+    <div class="form-actions"><button type="button" class="btn" data-close-modal="roleModal">取消</button><button class="btn primary" type="submit">保存角色</button></div>
+  </form>
+</div>
+<div id="userPermModal" class="modal-backdrop hidden">
+  <form id="userPermForm" class="modal wide">
+    <h3>用户权限覆盖</h3><div class="modal-sub" id="userPermSub">角色权限之外，可对单个用户额外允许或拒绝</div>
+    <input type="hidden" id="userPermUserId">
+    <div id="userPermGrid" class="check-grid"></div>
+    <div id="userPermError" class="form-error"></div>
+    <div class="form-actions"><button type="button" class="btn" data-close-modal="userPermModal">取消</button><button class="btn primary" type="submit">保存覆盖</button></div>
+  </form>
+</div>
 <div id="toast" class="toast hidden"></div>
 
 <script>
@@ -139,7 +225,12 @@ const ICONS = {
   clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>'
 };
-const state = { token: localStorage.getItem('dgov_token') || '', user: null, groups: [], modules: {}, users: [] };
+const state = {
+  token: localStorage.getItem('dgov_token') || '', user: null, groups: [], modules: {}, users: [],
+  authz: { catalog: null, roles: [], users: [], tab: 'roles' },
+  assets: null, meta: null, quality: null, warehouse: null, logs: null,
+  sources: null
+};
 const $ = (id) => document.getElementById(id);
 const esc = (value) => String(value ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 const icon = (name, cls='') => `<svg class="icon ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name] || ICONS.apps}</svg>`;
@@ -200,7 +291,7 @@ function renderShell() {
     <div class="nav-item"><button class="nav-link" data-route="user-center">${icon('user')}用户中心</button></div>`;
   $('headerAvatar').textContent = initials(state.user); $('headerUsername').textContent = state.user.display_name;
   $('menuDisplayName').textContent = `${state.user.display_name} · ${state.user.username}`;
-  $('menuRole').textContent = ROLE_NAMES[state.user.role] || state.user.role;
+  $('menuRole').textContent = roleName(state.user.role);
 }
 function currentRoute() {
   const hash = location.hash.replace(/^#\/?/, '');
@@ -234,7 +325,8 @@ function route() {
   const item = state.modules[current.id];
   if (!item) return;
   setHeading(item.name, item.description, item.groupTitle, item.implemented ? '已上线' : '功能规划中');
-  if (item.implemented) { renderUserCenter(); updateActive(item.id); return; }
+  const renderer = PAGE_RENDERERS[item.id];
+  if (item.implemented && renderer) { renderer(); updateActive(item.id); return; }
   $('pageContent').innerHTML = `<section class="panel placeholder"><div class="placeholder-inner"><div class="module-emblem">${icon(item.groupKey === 'engines' ? 'engine' : item.groupKey === 'configurations' ? 'config' : 'apps')}</div><h2>${esc(item.name)}</h2><p class="placeholder-copy">敬请期待功能上线......</p><p class="placeholder-desc">${esc(item.description)}。模块骨架已接入统一导航与权限体系。</p>${item.id === 'overview' ? '' : `<button class="btn" data-module="overview">${icon('arrow')}返回总览视图</button>`}</div></section>`;
   updateActive(item.id);
 }
@@ -253,12 +345,17 @@ function renderUserCenter() {
   if (canManage) { $('openCreateUser').addEventListener('click', openCreateUser); loadUsers(); }
 }
 async function loadUsers() {
-  try { state.users = await request('/users'); renderUserTable(); }
+  try {
+    if (can('authz:manage') && !state.authz.roles.length) {
+      try { state.authz.roles = await request('/roles'); } catch (error) { /* keep static roles */ }
+    }
+    state.users = await request('/users'); renderUserTable();
+  }
   catch (error) { $('userTableBody').innerHTML = `<tr><td colspan="5">${esc(error.message)}</td></tr>`; }
 }
 function renderUserTable() {
   const body = $('userTableBody'); if (!body) return;
-  body.innerHTML = state.users.map(user => `<tr><td><div class="user-cell"><span class="avatar">${esc(initials(user))}</span><span><b>${esc(user.display_name)}</b><small>@${esc(user.username)}</small></span></div></td><td><select class="role-select" data-user-role="${user.id}" ${user.id === state.user.id ? 'disabled' : ''}>${Object.entries(ROLE_NAMES).map(([key,name]) => `<option value="${key}" ${user.role === key ? 'selected' : ''}>${name}</option>`).join('')}</select></td><td><span class="status-badge ${user.is_active ? '' : 'off'}">${user.is_active ? '正常' : '已停用'}</span></td><td class="muted">${esc(formatDate(user.last_login_at))}</td><td><div class="table-actions"><button class="btn small" data-reset-user="${user.id}">重置密码</button><button class="btn small ${user.is_active ? 'danger' : ''}" data-toggle-user="${user.id}" ${user.id === state.user.id ? 'disabled' : ''}>${user.is_active ? '停用' : '启用'}</button></div></td></tr>`).join('');
+  body.innerHTML = state.users.map(user => `<tr><td><div class="user-cell"><span class="avatar">${esc(initials(user))}</span><span><b>${esc(user.display_name)}</b><small>@${esc(user.username)}</small></span></div></td><td><select class="role-select" data-user-role="${user.id}" ${user.id === state.user.id ? 'disabled' : ''}>${roleOptions(user.role)}</select></td><td><span class="status-badge ${user.is_active ? '' : 'off'}">${user.is_active ? '正常' : '已停用'}</span></td><td class="muted">${esc(formatDate(user.last_login_at))}</td><td><div class="table-actions"><button class="btn small" data-reset-user="${user.id}">重置密码</button><button class="btn small ${user.is_active ? 'danger' : ''}" data-toggle-user="${user.id}" ${user.id === state.user.id ? 'disabled' : ''}>${user.is_active ? '停用' : '启用'}</button></div></td></tr>`).join('');
 }
 async function changePassword(event) {
   event.preventDefault();
@@ -285,6 +382,756 @@ async function resetUser(id) {
   try { const result = await request(`/users/${id}/reset-password`, { method: 'POST' }); toast(result.detail); }
   catch (error) { toast(error.message, true); }
 }
+
+/* ------------------------------------------------------------------ */
+/* Shared helpers for the governance pages                            */
+/* ------------------------------------------------------------------ */
+const LAYER_COLORS = { ODS: '#6f9345', DWD: '#4d7fa8', DWS: '#7b6aa8', ADS: '#b07b3f', DIM: '#4d9a8a', STG: '#a08a4a', TMP: '#8b8e86', OTHER: '#8b8e86' };
+const PAGE_RENDERERS = {};
+
+function can(permission) { return Array.isArray(state.user?.permissions) && state.user.permissions.includes(permission); }
+function roleName(code) { const role = (state.authz.roles || []).find(item => item.code === code); return role?.name || ROLE_NAMES[code] || code || '-'; }
+function roleOptions(selected) {
+  let roles = (state.authz.roles || []).map(role => ({ code: role.code, name: role.name }));
+  if (!roles.length) roles = Object.entries(ROLE_NAMES).map(([code, name]) => ({ code, name }));
+  return roles.map(role => `<option value="${esc(role.code)}" ${role.code === selected ? 'selected' : ''}>${esc(role.name)}</option>`).join('');
+}
+function query(params) {
+  const search = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => { if (value !== '' && value !== null && value !== undefined) search.set(key, value); });
+  return search.toString();
+}
+function stat(label, value, sub) { return `<article class="panel stat"><div class="k">${esc(label)}</div><div class="v">${value}</div><div class="s">${sub || ''}</div></article>`; }
+function fmt(value) { return Number(value || 0).toLocaleString('zh-CN'); }
+function badge(text, tone = 'muted') {
+  const colors = { good: 'background:#e8f2dd;color:#5a7d35', warn: 'background:#fbf1db;color:#9a7424', bad: 'background:#faece8;color:#b65b52', muted: 'background:#f1efe8;color:#74776f', green: 'background:var(--green-soft);color:var(--green-dark)' };
+  return `<span class="pill" style="${colors[tone] || colors.muted}">${esc(text)}</span>`;
+}
+function layerPill(layer) { const name = layer || 'OTHER'; const color = LAYER_COLORS[name] || LAYER_COLORS.OTHER; return `<span class="pill" style="background:${color}1f;color:${color}">${esc(name)}</span>`; }
+function scorePill(score) { const value = Number(score || 0); const tone = value >= 85 ? 'good' : value >= 70 ? 'warn' : 'bad'; return `<span class="score ${tone}">${value.toFixed(1)}</span>`; }
+function sensitivePill(level) { const tone = level === 'L4' ? 'bad' : level === 'L3' ? 'warn' : level === 'L2' ? 'good' : 'muted'; return badge(level || 'L1', tone); }
+function objText(value) { if (value === null || value === undefined) return '-'; if (typeof value === 'string') return value; try { return JSON.stringify(value, null, 2); } catch (error) { return String(value); } }
+function emptyRow(cols, text = '暂无数据') { return `<tr><td colspan="${cols}" class="muted" style="text-align:center;padding:26px">${esc(text)}</td></tr>`; }
+function renderPager(id, total, page, size, onPage) {
+  const el = $(id); if (!el) return;
+  const pages = Math.max(1, Math.ceil(total / size));
+  el.innerHTML = `<span>共 ${total} 条 · 第 ${page}/${pages} 页</span><button data-page="${page - 1}" ${page <= 1 ? 'disabled' : ''}>上一页</button><button data-page="${page + 1}" ${page >= pages ? 'disabled' : ''}>下一页</button>`;
+  el.onclick = event => { const button = event.target.closest('[data-page]'); if (button && !button.disabled) onPage(Number(button.dataset.page)); };
+}
+
+/* ------------------------------------------------------------------ */
+/* Asset inventory                                                    */
+/* ------------------------------------------------------------------ */
+function renderAssets() {
+  if (!state.assets) state.assets = { page: 1, page_size: 15, keyword: '', layer: '', domain: '', status: 'active' };
+  setHeading('资产盘点', '基于元数据测试 API 的资产总量、分层域分布、血缘与质量画像', '应用功能', '已上线');
+  $('pageContent').innerHTML = `
+    <div id="assetStats" class="grid-stats"></div>
+    <section class="panel card">
+      <div class="card-head"><div><h2>数据资产清单</h2><p>支持按分层、主题域、状态与关键字检索</p></div><div id="assetLayerChips" class="chips"></div></div>
+      <div class="toolbar">
+        <input id="assetKeyword" class="input" placeholder="搜索表名 / 注释 / 表 ID" value="${esc(state.assets.keyword)}">
+        <select id="assetStatus" class="input"><option value="active">活跃资产</option><option value="deprecated">已下线</option><option value="all">全部状态</option></select>
+        <button id="assetSearch" class="btn primary small">查询</button>
+        <button id="assetReset" class="btn small">重置</button>
+      </div>
+      <div id="assetTable" class="table-wrap"><div class="loading">正在加载资产...</div></div>
+      <div id="assetPager" class="pager"></div>
+    </section>
+    <section id="assetDetail" class="panel card hidden"></section>`;
+  $('assetStatus').value = state.assets.status;
+  $('assetSearch').onclick = () => { const a = state.assets; a.keyword = $('assetKeyword').value.trim(); a.status = $('assetStatus').value; a.page = 1; loadAssets(); };
+  $('assetKeyword').onkeydown = event => { if (event.key === 'Enter') $('assetSearch').click(); };
+  $('assetReset').onclick = () => { state.assets = { page: 1, page_size: 15, keyword: '', layer: '', domain: '', status: 'active' }; renderAssets(); };
+  $('assetLayerChips').onclick = event => { const chip = event.target.closest('[data-layer]'); if (!chip) return; state.assets.layer = chip.dataset.layer; state.assets.page = 1; loadAssets(); };
+  $('assetTable').onclick = event => { const row = event.target.closest('[data-asset-id]'); if (row) openAssetDetail(Number(row.dataset.assetId)); };
+  loadAssets();
+}
+async function loadAssets() {
+  const a = state.assets;
+  try {
+    const [summary, data] = await Promise.all([
+      request('/assets/summary'),
+      request('/assets/tables?' + query({ keyword: a.keyword, layer: a.layer, domain: a.domain, status: a.status, page: a.page, page_size: a.page_size }))
+    ]);
+    $('assetStats').innerHTML = [
+      stat('活跃数据表', fmt(summary.tables), `${summary.deprecated_tables} 张已下线`),
+      stat('字段总数', fmt(summary.columns), `${summary.database_count} 个数据库`),
+      stat('表级血缘', fmt(summary.lineage_edges), '条有效关系'),
+      stat('字段级血缘', fmt(summary.field_lineage_edges), '条字段映射'),
+      stat('平均质量分', Number(summary.avg_quality || 0).toFixed(1), '满分 100'),
+      stat('注释覆盖', summary.comment_coverage + '%', `分区覆盖 ${summary.partition_coverage}%`),
+      stat('存储规模', summary.size_text, `${fmt(summary.record_count)} 行记录`),
+      stat('主题域', summary.domains.length, `覆盖 ${summary.domains.length} 个业务域`)
+    ].join('');
+    $('assetLayerChips').innerHTML = `<button class="chip ${!a.layer ? 'active' : ''}" data-layer="">全部<b>${summary.tables}</b></button>` +
+      summary.layers.map(layer => `<button class="chip ${a.layer === layer.name ? 'active' : ''}" data-layer="${esc(layer.name)}">${esc(layer.name)}<b>${layer.count}</b></button>`).join('');
+    $('assetTable').innerHTML = data.items.length ? `<table><thead><tr><th>数据表</th><th>分层</th><th>主题域</th><th>字段</th><th>血缘</th><th>质量</th><th>状态</th></tr></thead><tbody>` +
+      data.items.map(table => `<tr data-asset-id="${table.id}" style="cursor:pointer"><td><div class="user-cell"><span class="item-icon">${icon('grid')}</span><span><b>${esc(table.name)}</b><small>${esc(table.comment || table.external_id)}${table.db_name ? ' · ' + esc(table.db_name) : ''}</small></span></div></td><td>${layerPill(table.layer)}</td><td>${esc(table.domain || '通用')}</td><td>${table.column_count} <span class="muted" style="font-size:11px">(${table.sensitive_columns} 敏感)</span></td><td><span class="muted">↑${table.upstream} / ↓${table.downstream}</span></td><td>${scorePill(table.quality_score)}</td><td>${table.status === 'active' ? badge('活跃', 'good') : badge('下线', 'muted')}</td></tr>`).join('') + '</tbody></table>' : `<div class="empty">没有匹配的资产</div>`;
+    renderPager('assetPager', data.total, a.page, a.page_size, page => { a.page = page; loadAssets(); });
+  } catch (error) { $('assetTable').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+async function openAssetDetail(id) {
+  const panel = $('assetDetail'); panel.classList.remove('hidden'); panel.innerHTML = '<div class="loading">正在加载资产详情...</div>';
+  try {
+    const detail = await request(`/assets/tables/${id}`);
+    const table = detail.table;
+    const columns = detail.columns.slice(0, 80);
+    panel.innerHTML = `
+      <div class="card-head"><div><h2>${esc(table.name)}</h2><p>${esc(table.comment || '暂无中文注释')} · ${esc(table.external_id)}</p></div><div class="chips">${layerPill(table.layer)} ${badge(table.status === 'active' ? '活跃' : '已下线', table.status === 'active' ? 'good' : 'muted')} ${scorePill(table.quality_score)}</div></div>
+      <div class="meta-grid"><div class="meta-box"><span>所属数据库</span><b>${esc(table.db_name || '-')}</b></div><div class="meta-box"><span>租户</span><b>${esc(table.tenant || '-')}</b></div><div class="meta-box"><span>主题域 / 粒度</span><b>${esc(table.domain || '通用')} / ${esc(table.grain || '-')}</b></div><div class="meta-box"><span>存储类型</span><b>${esc(table.store_type || '-')}</b></div><div class="meta-box"><span>记录数 / 存储</span><b>${fmt(table.record_count)} / ${esc(table.size_text)}</b></div><div class="meta-box"><span>最新分区</span><b>${esc(table.partition_newest || '-')}</b></div><div class="meta-box"><span>最近 DML</span><b>${esc(formatDate(table.last_dml_time))}</b></div><div class="meta-box"><span>首次 / 最近发现</span><b>${esc(formatDate(table.first_seen_at))}</b></div></div>
+      <div class="tabs"><button class="tab active">字段清单 (${detail.columns.length})</button></div>
+      <div class="table-wrap small-table"><table><thead><tr><th>字段</th><th>类型</th><th>类型族</th><th>敏感等级</th><th>数据分类</th><th>注释</th></tr></thead><tbody>${columns.map(column => `<tr><td><b>${esc(column.name)}</b></td><td class="muted">${esc(column.data_type)}</td><td>${esc(column.type_family)}</td><td>${sensitivePill(column.sensitive_level)}</td><td>${esc(column.data_category || '-')}</td><td class="muted">${esc(column.comment || '-')}</td></tr>`).join('') || emptyRow(6)}</tbody></table></div>
+      ${detail.columns.length > 80 ? `<p class="muted" style="font-size:11px;margin-top:6px">仅展示前 80 个字段，共 ${detail.columns.length} 个</p>` : ''}
+      <div class="split" style="margin-top:16px">
+        <div><div class="sub-head">上游血缘</div><div class="step-list">${detail.lineage.upstream.map(edge => `<div class="job"><b>${esc(edge.source_table_name || edge.source_table_id)}</b><div class="job-meta"><span>${esc(edge.source_schema || '-')}</span><span>${esc(edge.lineage_type || '')}</span></div></div>`).join('') || '<div class="empty">无上游表</div>'}</div></div>
+        <div><div class="sub-head">下游血缘</div><div class="step-list">${detail.lineage.downstream.map(edge => `<div class="job"><b>${esc(edge.target_table_name || edge.target_table_id)}</b><div class="job-meta"><span>${esc(edge.target_schema || '-')}</span><span>${esc(edge.lineage_type || '')}</span></div></div>`).join('') || '<div class="empty">无下游表</div>'}</div></div>
+      </div>
+      <div class="sub-head">质量校验（最近一次）</div>
+      <div class="table-wrap small-table"><table><thead><tr><th>规则</th><th>维度</th><th>级别</th><th>结果</th><th>说明</th></tr></thead><tbody>${detail.quality.items.map(item => `<tr><td>${esc(item.rule_name)}<small class="muted"> ${esc(item.rule_code)}</small></td><td>${esc(item.dimension)}</td><td>${esc(item.severity)}</td><td>${badge(item.status === 'passed' ? '通过' : item.status === 'warning' ? '警告' : '失败', item.status === 'passed' ? 'good' : item.status === 'warning' ? 'warn' : 'bad')}</td><td class="muted">${esc(objText(item.detail))}</td></tr>`).join('') || emptyRow(5, '暂无质量结果，请先执行巡检')}</tbody></table></div>`;
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (error) { panel.innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Metadata and lineage                                               */
+/* ------------------------------------------------------------------ */
+function renderMetadata() {
+  if (!state.meta) state.meta = { page: 1, page_size: 20, keyword: '', selected: null, tab: 'columns', detail: null, graph: null, list: [] };
+  setHeading('元数据及血缘', '表与字段级元数据检索、链路可视化与影响分析', '应用功能', '已上线');
+  $('pageContent').innerHTML = `
+    <div class="split">
+      <section class="panel card">
+        <div class="card-head"><div><h2>元数据检索</h2><p>按表名或注释定位资产</p></div></div>
+        <div class="toolbar" style="margin:10px 0 4px"><input id="metaKeyword" class="input" style="flex:1;min-width:0" placeholder="搜索表名 / 注释" value="${esc(state.meta.keyword)}"><button id="metaSearch" class="btn primary small">查询</button></div>
+        <div id="metaList" class="list"><div class="loading">正在加载...</div></div>
+        <div id="metaPager" class="pager"></div>
+      </section>
+      <section id="metaDetail" class="panel card"><div class="loading">请选择左侧数据表查看元数据</div></section>
+    </div>`;
+  $('metaSearch').onclick = () => { state.meta.keyword = $('metaKeyword').value.trim(); state.meta.page = 1; loadMetaTables(); };
+  $('metaKeyword').onkeydown = event => { if (event.key === 'Enter') $('metaSearch').click(); };
+  $('metaList').onclick = event => { const item = event.target.closest('[data-meta-id]'); if (item) selectMetaTable(Number(item.dataset.metaId)); };
+  $('metaDetail').onclick = event => {
+    const tab = event.target.closest('[data-meta-tab]');
+    if (tab) { state.meta.tab = tab.dataset.metaTab; paintMetaDetail(); return; }
+    const node = event.target.closest('[data-lineage-node]');
+    if (node) selectMetaTable(Number(node.dataset.lineageNode));
+  };
+  loadMetaTables();
+}
+async function loadMetaTables() {
+  const m = state.meta;
+  try {
+    const data = await request('/assets/tables?' + query({ keyword: m.keyword, status: 'active', page: m.page, page_size: m.page_size }));
+    m.list = data.items;
+    if (!data.items.length) {
+      $('metaList').innerHTML = '<div class="empty">没有匹配的数据表</div>';
+      $('metaDetail').innerHTML = '<div class="empty">没有可展示的元数据</div>';
+      renderPager('metaPager', 0, 1, m.page_size, () => {});
+      return;
+    }
+    if (!data.items.some(item => item.id === m.selected)) m.selected = data.items[0].id;
+    $('metaList').innerHTML = data.items.map(item => `<button class="list-item ${item.id === m.selected ? 'active' : ''}" data-meta-id="${item.id}"><b>${esc(item.name)}</b><small>${esc(item.comment || '暂无注释')}</small><div class="list-meta">${layerPill(item.layer)}<span class="muted" style="font-size:10.5px">${item.column_count} 字段</span>${scorePill(item.quality_score)}</div></button>`).join('');
+    renderPager('metaPager', data.total, m.page, m.page_size, page => { m.page = page; loadMetaTables(); });
+    await loadMetaDetail(m.selected);
+  } catch (error) { $('metaDetail').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+async function selectMetaTable(id) {
+  state.meta.selected = id;
+  document.querySelectorAll('[data-meta-id]').forEach(el => el.classList.toggle('active', Number(el.dataset.metaId) === id));
+  await loadMetaDetail(id);
+}
+async function loadMetaDetail(id) {
+  if (!id) return;
+  $('metaDetail').innerHTML = '<div class="loading">正在加载血缘与元数据...</div>';
+  try {
+    const [detail, graph] = await Promise.all([
+      request(`/assets/tables/${id}`),
+      request('/lineage/graph?' + query({ table_id: id, depth: 2, direction: 'both' }))
+    ]);
+    state.meta.detail = detail; state.meta.graph = graph; paintMetaDetail();
+  } catch (error) { $('metaDetail').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+function paintMetaDetail() {
+  const detail = state.meta.detail, graph = state.meta.graph;
+  if (!detail) return;
+  const table = detail.table;
+  const tab = state.meta.tab || 'columns';
+  const fieldCount = detail.lineage.fields_in.length + detail.lineage.fields_out.length;
+  const tabs = [['columns', `字段清单 (${detail.columns.length})`], ['table-lineage', `表级血缘 (${graph.stats.edges})`], ['field-lineage', `字段级血缘 (${fieldCount})`], ['quality', `质量结果 (${detail.quality.items.length})`]];
+  let content = '';
+  if (tab === 'columns') {
+    content = `<div class="table-wrap small-table"><table><thead><tr><th>字段</th><th>数据类型</th><th>敏感等级</th><th>数据分类</th><th>注释</th></tr></thead><tbody>${detail.columns.map(column => `<tr><td><b>${esc(column.name)}</b></td><td class="muted">${esc(column.data_type)}</td><td>${sensitivePill(column.sensitive_level)}</td><td>${esc(column.data_category || '-')}</td><td class="muted">${esc(column.comment || '-')}</td></tr>`).join('') || emptyRow(5)}</tbody></table></div>`;
+  } else if (tab === 'table-lineage') {
+    content = `<div class="graph">${lineageSvg(graph)}</div><p class="muted" style="font-size:11px;margin-top:6px">节点可点击切换；双向展开 2 层，共 ${graph.stats.nodes} 个节点、${graph.stats.edges} 条边。外部系统表不在资产目录中时仍会作为血缘节点展示。</p>`;
+  } else if (tab === 'field-lineage') {
+    const block = (title, rows) => `<div class="sub-head">${title}</div><div class="table-wrap small-table"><table><thead><tr><th>上游表</th><th>上游字段</th><th>下游表</th><th>下游字段</th><th>推导方式</th><th>置信度</th></tr></thead><tbody>${rows.map(edge => `<tr><td class="muted">${esc(edge.source_table_name || edge.source_table_id)}</td><td><b>${esc(edge.source_column)}</b></td><td class="muted">${esc(edge.target_table_name || edge.target_table_id)}</td><td><b>${esc(edge.target_column)}</b></td><td>${badge(edge.method || 'same_name', 'green')}</td><td>${Number(edge.confidence || 0).toFixed(2)}</td></tr>`).join('') || emptyRow(6, '暂无字段映射，需上游字段元数据或 SQL 解析')}</tbody></table></div>`;
+    content = block('上游字段映射（入）', detail.lineage.fields_in) + block('下游字段映射（出）', detail.lineage.fields_out);
+  } else {
+    content = `<div class="table-wrap small-table"><table><thead><tr><th>规则</th><th>维度</th><th>级别</th><th>结果</th><th>得分</th><th>说明</th></tr></thead><tbody>${detail.quality.items.map(item => `<tr><td>${esc(item.rule_name)}<small class="muted"> ${esc(item.rule_code)}</small></td><td>${esc(item.dimension)}</td><td>${esc(item.severity)}</td><td>${badge(item.status === 'passed' ? '通过' : item.status === 'warning' ? '警告' : '失败', item.status === 'passed' ? 'good' : item.status === 'warning' ? 'warn' : 'bad')}</td><td>${Number(item.score || 0).toFixed(1)}</td><td class="muted">${esc(objText(item.detail))}</td></tr>`).join('') || emptyRow(6, '暂无质量结果')}</tbody></table></div>`;
+  }
+  $('metaDetail').innerHTML = `
+    <div class="card-head"><div><h2>${esc(table.name)}</h2><p>${esc(table.comment || '暂无注释')} · ${esc(table.external_id)}</p></div><div class="chips">${layerPill(table.layer)}${scorePill(table.quality_score)}</div></div>
+    <div class="meta-grid"><div class="meta-box"><span>数据库 / 租户</span><b>${esc(table.db_name || '-')} / ${esc(table.tenant || '-')}</b></div><div class="meta-box"><span>主题域 / 粒度</span><b>${esc(table.domain || '通用')} / ${esc(table.grain || '-')}</b></div><div class="meta-box"><span>记录数 / 存储</span><b>${fmt(table.record_count)} / ${esc(table.size_text)}</b></div><div class="meta-box"><span>最新分区</span><b>${esc(table.partition_newest || '-')}</b></div><div class="meta-box"><span>上游 / 下游表</span><b>${detail.lineage.upstream.length} / ${detail.lineage.downstream.length}</b></div><div class="meta-box"><span>字段级映射</span><b>${fieldCount} 条</b></div></div>
+    <div class="tabs">${tabs.map(([key, label]) => `<button class="tab ${tab === key ? 'active' : ''}" data-meta-tab="${key}">${label}</button>`).join('')}</div>
+    ${content}`;
+}
+function lineageSvg(graph) {
+  if (!graph.nodes.length) return '<div class="empty">暂无血缘关系</div>';
+  const levels = [...new Set(graph.nodes.map(node => node.level))].sort((a, b) => a - b);
+  const columns = {}; levels.forEach(level => { columns[level] = []; });
+  graph.nodes.forEach(node => { (columns[node.level] || (columns[node.level] = [])).push(node); });
+  const colW = 200, rowH = 58, padX = 30, padY = 26, nodeW = 148, nodeH = 40;
+  const maxRows = Math.max(1, ...levels.map(level => columns[level].length));
+  const width = Math.max(700, padX * 2 + (levels.length - 1) * colW + nodeW);
+  const height = Math.max(250, padY * 2 + (maxRows - 1) * rowH + nodeH);
+  const positions = {};
+  levels.forEach((level, index) => {
+    const nodes = columns[level];
+    const totalHeight = (nodes.length - 1) * rowH;
+    nodes.forEach((node, row) => { positions[node.external_id] = { x: padX + index * colW, y: (height - nodeH) / 2 - totalHeight / 2 + row * rowH }; });
+  });
+  const paths = graph.edges.map(edge => {
+    const source = positions[edge.source], target = positions[edge.target];
+    if (!source || !target) return '';
+    const x1 = source.x + nodeW, y1 = source.y + nodeH / 2, x2 = target.x, y2 = target.y + nodeH / 2;
+    const mid = (x1 + x2) / 2;
+    return `<path d="M${x1},${y1} C${mid},${y1} ${mid},${y2} ${x2 - 6},${y2}" fill="none" stroke="#c9c2b2" stroke-width="1.4" marker-end="url(#lineage-arrow)"/>`;
+  }).join('');
+  const nodes = graph.nodes.map(node => {
+    const position = positions[node.external_id];
+    const color = LAYER_COLORS[node.layer] || LAYER_COLORS.OTHER;
+    const short = node.name.length > 19 ? node.name.slice(0, 18) + '…' : node.name;
+    const clickable = node.table_id && !node.is_root;
+    return `<g ${clickable ? `data-lineage-node="${node.table_id}" style="cursor:pointer"` : ''}><title>${esc(node.name)} · ${esc(node.layer)}</title><rect x="${position.x}" y="${position.y}" width="${nodeW}" height="${nodeH}" rx="8" fill="${node.is_root ? '#eef4e5' : '#fffdf8'}" stroke="${node.is_root ? color : '#ddd6c7'}" stroke-width="${node.is_root ? 1.8 : 1}"/><rect x="${position.x}" y="${position.y}" width="4" height="${nodeH}" rx="2" fill="${color}"/><text x="${position.x + 12}" y="${position.y + 17}" font-size="11.5" fill="#2d312d" font-weight="${node.is_root ? 700 : 500}">${esc(short)}</text><text x="${position.x + 12}" y="${position.y + 31}" font-size="9.5" fill="#858980">${esc(node.layer)} · ${node.quality_score == null ? '-' : Number(node.quality_score).toFixed(1) + '分'}</text></g>`;
+  }).join('');
+  return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="lineage-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c9c2b2"/></marker></defs>${paths}${nodes}</svg>`;
+}
+
+/* ------------------------------------------------------------------ */
+/* Quality center                                                     */
+/* ------------------------------------------------------------------ */
+function renderQuality() {
+  if (!state.quality) state.quality = { page: 1, page_size: 20, status: '' };
+  setHeading('质量检测', '基于元数据规则的质量巡检、问题清单与合格率趋势', '应用功能', '已上线');
+  const runButton = can('governance:write') ? '<button id="qualityRun" class="btn primary small">执行质量巡检</button>' : '';
+  $('pageContent').innerHTML = `
+    <div id="qualityStats" class="grid-stats"></div>
+    <section class="panel card">
+      <div class="card-head"><div><h2>合格率趋势</h2><p>按巡检批次统计通过率</p></div>${runButton}</div>
+      <div id="qualityTrend" class="bars"></div>
+    </section>
+    <section class="panel card">
+      <div class="card-head"><div><h2>质量问题清单</h2><p>最近一次巡检的警告与失败项</p></div><div id="qualityFilters" class="chips"><button class="chip active" data-qstatus="">全部</button><button class="chip" data-qstatus="failed">失败</button><button class="chip" data-qstatus="warning">警告</button></div></div>
+      <div id="qualityIssues" class="table-wrap"><div class="loading">正在加载质量问题...</div></div>
+      <div id="qualityPager" class="pager"></div>
+    </section>
+    <section class="panel card">
+      <div class="card-head"><div><h2>质量规则</h2><p>元数据完整性、时效性、一致性与规范类规则</p></div></div>
+      <div id="qualityRules" class="table-wrap"><div class="loading">正在加载规则...</div></div>
+    </section>`;
+  if ($('qualityRun')) $('qualityRun').onclick = runQualityChecks;
+  $('qualityFilters').onclick = event => { const chip = event.target.closest('[data-qstatus]'); if (!chip) return; state.quality.status = chip.dataset.qstatus; state.quality.page = 1; loadQuality(); };
+  $('qualityIssues').onclick = () => {};
+  loadQuality();
+}
+async function loadQuality() {
+  const q = state.quality;
+  try {
+    const [summary, trend, issues, rules] = await Promise.all([
+      request('/quality-center/summary'),
+      request('/quality-center/trend?limit=10'),
+      request('/quality-center/issues?' + query({ status: q.status, page: q.page, page_size: q.page_size })),
+      request('/quality-center/rules')
+    ]);
+    $('qualityStats').innerHTML = [
+      stat('巡检批次', esc(summary.run_id || '-'), summary.executed_at ? formatDate(summary.executed_at) : '尚未执行'),
+      stat('检查项', fmt(summary.checks), `${summary.tables} 张表`),
+      stat('通过率', (summary.pass_rate || 0) + '%', `通过 ${summary.passed || 0} 项`),
+      stat('问题项', fmt(summary.issues || 0), `失败 ${summary.failed || 0} / 警告 ${summary.warning || 0}`)
+    ].join('');
+    $('qualityTrend').innerHTML = trend.length ? trend.map(item => `<div class="bar" title="${esc(item.run_id)} · ${item.pass_rate}%"><i style="height:${Math.max(3, Math.min(100, item.pass_rate))}%"></i><em>${item.pass_rate}%</em></div>`).join('') : '<div class="empty" style="width:100%">暂无巡检批次</div>';
+    document.querySelectorAll('#qualityFilters .chip').forEach(chip => chip.classList.toggle('active', chip.dataset.qstatus === q.status));
+    $('qualityIssues').innerHTML = issues.items.length ? `<table><thead><tr><th>数据表</th><th>规则</th><th>维度</th><th>结果</th><th>得分</th><th>说明</th></tr></thead><tbody>${issues.items.map(item => `<tr><td><b>${esc(item.table_name)}</b><small class="muted"> ${esc(item.table_external_id || '')}</small></td><td>${esc(item.rule_name)}<small class="muted"> ${esc(item.rule_code)}</small></td><td>${esc(item.dimension)}</td><td>${badge(item.status === 'failed' ? '失败' : '警告', item.status === 'failed' ? 'bad' : 'warn')}</td><td>${Number(item.score || 0).toFixed(1)}</td><td class="muted">${esc(objText(item.detail))}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">当前筛选下没有质量问题</div>';
+    renderPager('qualityPager', issues.total, q.page, q.page_size, page => { q.page = page; loadQuality(); });
+    $('qualityRules').innerHTML = `<table><thead><tr><th>规则</th><th>维度</th><th>对象</th><th>级别</th><th>说明</th><th>状态</th></tr></thead><tbody>${rules.map(rule => `<tr><td><b>${esc(rule.name)}</b><small class="muted"> ${esc(rule.code)}</small></td><td>${esc(rule.dimension)}</td><td>${esc(rule.target)}</td><td>${badge(rule.severity, rule.severity === 'high' ? 'bad' : 'warn')}</td><td class="muted">${esc(rule.description)}</td><td>${rule.enabled ? badge('启用', 'good') : badge('停用', 'muted')}</td></tr>`).join('')}</tbody></table>`;
+  } catch (error) { $('qualityIssues').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+async function runQualityChecks() {
+  const button = $('qualityRun'); if (button) { button.disabled = true; button.textContent = '巡检中...'; }
+  try {
+    const result = await request('/quality-center/run', { method: 'POST' });
+    toast(`巡检完成：${result.checks} 项检查，通过率 ${result.pass_rate}%`);
+    await loadQuality();
+  } catch (error) { toast(error.message, true); }
+  finally { if (button) { button.disabled = false; button.textContent = '执行质量巡检'; } }
+}
+
+/* ------------------------------------------------------------------ */
+/* Warehouse modeling                                                 */
+/* ------------------------------------------------------------------ */
+function renderWarehouse() {
+  if (!state.warehouse) state.warehouse = { page: 1, page_size: 20, keyword: '', layer: '', domain: '' };
+  setHeading('数仓建模', '分层建模规范、命名与类型合规性、模型血缘热度', '应用功能', '已上线');
+  $('pageContent').innerHTML = `
+    <div id="warehouseStats" class="grid-stats"></div>
+    <section class="panel card">
+      <div class="card-head"><div><h2>数仓模型</h2><p>按分层与主题域查看模型规范执行情况</p></div><div class="chips" id="warehouseLayers"></div></div>
+      <div class="toolbar"><input id="warehouseKeyword" class="input" placeholder="搜索模型名称" value="${esc(state.warehouse.keyword)}"><button id="warehouseSearch" class="btn primary small">查询</button>${can('governance:write') ? '<button id="warehouseRebuild" class="btn small">重建模型</button>' : ''}</div>
+      <div id="warehouseTable" class="table-wrap"><div class="loading">正在加载数仓模型...</div></div>
+      <div id="warehousePager" class="pager"></div>
+    </section>`;
+  $('warehouseSearch').onclick = () => { state.warehouse.keyword = $('warehouseKeyword').value.trim(); state.warehouse.page = 1; loadWarehouse(); };
+  $('warehouseKeyword').onkeydown = event => { if (event.key === 'Enter') $('warehouseSearch').click(); };
+  $('warehouseLayers').onclick = event => { const chip = event.target.closest('[data-warehouse-layer]'); if (!chip) return; state.warehouse.layer = chip.dataset.warehouseLayer; state.warehouse.page = 1; loadWarehouse(); };
+  if ($('warehouseRebuild')) $('warehouseRebuild').onclick = async () => {
+    try { const result = await request('/warehouse/rebuild', { method: 'POST' }); toast(`已重建 ${result.models} 个数仓模型`); loadWarehouse(); }
+    catch (error) { toast(error.message, true); }
+  };
+  loadWarehouse();
+}
+async function loadWarehouse() {
+  const w = state.warehouse;
+  try {
+    const [summary, data] = await Promise.all([
+      request('/warehouse/summary'),
+      request('/warehouse/models?' + query({ keyword: w.keyword, layer: w.layer, domain: w.domain, page: w.page, page_size: w.page_size }))
+    ]);
+    $('warehouseStats').innerHTML = [
+      stat('模型总数', fmt(summary.total), `${summary.domains.length} 个主题域`),
+      stat('命名合规率', summary.naming_rate + '%', '按分层命名规范'),
+      stat('类型合规率', summary.type_rate + '%', '字段类型规范'),
+      stat('平均模型得分', Number(summary.avg_score || 0).toFixed(1), '命名 / 类型 / 质量综合')
+    ].join('');
+    $('warehouseLayers').innerHTML = `<button class="chip ${!w.layer ? 'active' : ''}" data-warehouse-layer="">全部<b>${summary.total}</b></button>` + summary.layers.map(layer => `<button class="chip ${w.layer === layer.name ? 'active' : ''}" data-warehouse-layer="${esc(layer.name)}">${esc(layer.name)}<b>${layer.count}</b></button>`).join('');
+    $('warehouseTable').innerHTML = data.items.length ? `<table><thead><tr><th>模型</th><th>分层</th><th>主题域</th><th>粒度</th><th>字段</th><th>命名</th><th>类型</th><th>血缘</th><th>得分</th></tr></thead><tbody>${data.items.map(model => `<tr><td><b>${esc(model.model_name)}</b><small class="muted"> ${esc(model.comment || '')}</small></td><td>${layerPill(model.layer)}</td><td>${esc(model.domain || '通用')}</td><td>${esc(model.grain || '-')}</td><td>${model.column_count}</td><td>${model.naming_compliant ? badge('合规', 'good') : badge('不合规', 'bad')}</td><td>${model.type_compliant ? badge('合规', 'good') : badge('不合规', 'warn')}</td><td>${model.lineage_degree}</td><td>${scorePill(model.score)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">没有匹配的数仓模型</div>';
+    renderPager('warehousePager', data.total, w.page, w.page_size, page => { w.page = page; loadWarehouse(); });
+  } catch (error) { $('warehouseTable').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Ontology modeling                                                  */
+/* ------------------------------------------------------------------ */
+function renderOntology() {
+  setHeading('本体建模', '从元数据自动识别业务实体与实体间数据流关系', '应用功能', '已上线');
+  $('pageContent').innerHTML = `
+    <div id="ontologyStats" class="grid-stats"></div>
+    <section class="panel card">
+      <div class="card-head"><div><h2>业务本体图谱</h2><p>实体由表名与注释关键词自动映射，关系来自表级血缘</p></div>${can('governance:write') ? '<button id="ontologyRebuild" class="btn small">重建本体</button>' : ''}</div>
+      <div id="ontologyGraph" class="graph"><div class="loading">正在加载本体...</div></div>
+    </section>
+    <section class="panel card">
+      <div class="card-head"><div><h2>实体清单</h2><p>映射表数量与样例资产</p></div></div>
+      <div id="ontologyEntities" class="grid-stats"></div>
+    </section>`;
+  if ($('ontologyRebuild')) $('ontologyRebuild').onclick = async () => {
+    try { const result = await request('/ontology-model/rebuild', { method: 'POST' }); toast(`已重建 ${result.entities} 个实体、${result.relations} 条关系`); loadOntology(); }
+    catch (error) { toast(error.message, true); }
+  };
+  loadOntology();
+}
+async function loadOntology() {
+  try {
+    const data = await request('/ontology-model');
+    $('ontologyStats').innerHTML = [
+      stat('业务实体', fmt(data.stats.entity_count), `${data.nodes.length} 个已映射节点`),
+      stat('映射数据表', fmt(data.stats.mapped_tables), '张表映射到实体'),
+      stat('实体关系', fmt(data.stats.relation_count), '条实体间数据流')
+    ].join('');
+    $('ontologyGraph').innerHTML = data.nodes.length ? ontologySvg(data) : '<div class="empty">暂无本体数据，请先执行元数据采集</div>';
+    $('ontologyEntities').innerHTML = data.nodes.length ? data.nodes.map(node => `<article class="panel stat"><div class="k">${esc(node.category)}</div><div class="v" style="font-size:17px">${esc(node.name)}</div><div class="s">${node.table_count} 张表 · ${esc(node.code)}</div><div class="role-perm">${(node.samples || []).slice(0, 3).map(sample => badge(sample.name, 'muted')).join('')}</div></article>`).join('') : '<div class="empty">暂无业务实体</div>';
+  } catch (error) { $('ontologyGraph').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+function ontologySvg(data) {
+  const nodes = data.nodes, width = 820, height = 420, cx = width / 2, cy = height / 2, radius = Math.min(width, height) / 2 - 80;
+  const positions = {};
+  nodes.forEach((node, index) => { const angle = (index / nodes.length) * Math.PI * 2 - Math.PI / 2; positions[node.name] = { x: cx + Math.cos(angle) * radius, y: cy + Math.sin(angle) * radius }; });
+  const edges = (data.edges || []).map(edge => {
+    const source = positions[edge.source], target = positions[edge.target];
+    if (!source || !target) return '';
+    return `<line x1="${source.x}" y1="${source.y}" x2="${target.x}" y2="${target.y}" stroke="#d6cfbf" stroke-width="${Math.min(3, 1 + edge.weight * 0.4)}"/><text x="${(source.x + target.x) / 2}" y="${(source.y + target.y) / 2}" font-size="9" fill="#9a9789" text-anchor="middle">${esc(edge.relation_type)}</text>`;
+  }).join('');
+  const nodeSvg = nodes.map(node => {
+    const position = positions[node.name];
+    const size = 34 + Math.min(18, node.table_count * 1.5);
+    return `<g><title>${esc(node.name)} · ${node.table_count} 张表</title><circle cx="${position.x}" cy="${position.y}" r="${size}" fill="#eef4e5" stroke="#a9c287" stroke-width="1.4"/><text x="${position.x}" y="${position.y - 2}" font-size="11.5" fill="#3d493a" text-anchor="middle" font-weight="600">${esc(node.name)}</text><text x="${position.x}" y="${position.y + 13}" font-size="9" fill="#7d8578" text-anchor="middle">${node.table_count} 表</text></g>`;
+  }).join('');
+  return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">${edges}${nodeSvg}</svg>`;
+}
+
+/* ------------------------------------------------------------------ */
+/* Log query                                                          */
+/* ------------------------------------------------------------------ */
+function renderLogs() {
+  if (!state.logs) state.logs = { page: 1, page_size: 20, category: '', level: '', keyword: '', items: [], selected: null };
+  setHeading('日志查询', '数据源调度、资产盘点、元数据与血缘变更、质量巡检审计日志', '应用功能', '已上线');
+  $('pageContent').innerHTML = `
+    <div id="logStats" class="grid-stats"></div>
+    <section class="panel card">
+      <div class="card-head"><div><h2>日志分类</h2><p>按业务分类快速过滤</p></div></div>
+      <div id="logCategories" class="chips"></div>
+      <div class="toolbar">
+        <input id="logKeyword" class="input" placeholder="搜索消息 / 操作者 / 资源" value="${esc(state.logs.keyword)}">
+        <select id="logLevel" class="input"><option value="">全部级别</option><option value="info">INFO</option><option value="warning">WARNING</option><option value="error">ERROR</option></select>
+        <button id="logSearch" class="btn primary small">查询</button>
+        ${can('config:write') ? '<button id="logCleanup" class="btn small danger">立即清理过期日志</button>' : ''}
+      </div>
+      <div id="logTable" class="table-wrap"><div class="loading">正在加载日志...</div></div>
+      <div id="logPager" class="pager"></div>
+      <div id="logDetail"></div>
+    </section>`;
+  $('logLevel').value = state.logs.level;
+  $('logSearch').onclick = () => { state.logs.keyword = $('logKeyword').value.trim(); state.logs.level = $('logLevel').value; state.logs.page = 1; loadLogs(); };
+  $('logKeyword').onkeydown = event => { if (event.key === 'Enter') $('logSearch').click(); };
+  $('logCategories').onclick = event => { const chip = event.target.closest('[data-log-category]'); if (!chip) return; state.logs.category = chip.dataset.logCategory; state.logs.page = 1; loadLogs(); };
+  $('logTable').onclick = event => {
+    const row = event.target.closest('[data-log-id]'); if (!row) return;
+    state.logs.selected = Number(row.dataset.logId); paintLogDetail();
+  };
+  if ($('logCleanup')) $('logCleanup').onclick = async () => {
+    try { const result = await request('/logs/cleanup', { method: 'POST' }); toast(`清理完成：过期 ${result.deleted_expired} 条，超限 ${result.deleted_overflow} 条`); loadLogs(); }
+    catch (error) { toast(error.message, true); }
+  };
+  loadLogs();
+}
+async function loadLogs() {
+  const l = state.logs;
+  try {
+    const [stats, retention, data] = await Promise.all([
+      request('/logs/categories?days=7'),
+      request('/logs/retention'),
+      request('/logs?' + query({ category: l.category, level: l.level, keyword: l.keyword, page: l.page, page_size: l.page_size }))
+    ]);
+    l.items = data.items;
+    const totalWeek = stats.reduce((sum, item) => sum + item.count, 0);
+    $('logStats').innerHTML = [
+      stat('日志总量', fmt(retention.total), `近 7 天 ${fmt(totalWeek)} 条`),
+      stat('保留策略', retention.retention_days + ' 天', `最多 ${fmt(retention.max_rows)} 行`),
+      stat('文件轮转', (retention.file_max_bytes / 1024 / 1024).toFixed(0) + ' MB', `保留 ${retention.file_backup_count} 个备份`),
+      stat('质量结果保留', retention.quality_result_retention_days + ' 天', '定期自动清理')
+    ].join('');
+    $('logCategories').innerHTML = `<button class="chip ${!l.category ? 'active' : ''}" data-log-category="">全部<b>${fmt(retention.total)}</b></button>` + stats.map(item => `<button class="chip ${l.category === item.category ? 'active' : ''}" data-log-category="${esc(item.category)}">${esc(item.name)}<b>${item.count}</b></button>`).join('');
+    $('logTable').innerHTML = data.items.length ? `<table><thead><tr><th>时间</th><th>级别</th><th>分类</th><th>动作</th><th>操作者</th><th>消息</th></tr></thead><tbody>${data.items.map(item => `<tr data-log-id="${item.id}" style="cursor:pointer"><td class="muted">${esc(formatDate(item.created_at))}</td><td>${badge((item.level || 'info').toUpperCase(), item.level === 'error' ? 'bad' : item.level === 'warning' ? 'warn' : 'good')}</td><td>${esc(item.category_name)}</td><td>${esc(item.action)}</td><td>${esc(item.actor || 'system')}</td><td>${esc(item.message)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">没有匹配的日志</div>';
+    renderPager('logPager', data.total, l.page, l.page_size, page => { l.page = page; loadLogs(); });
+    paintLogDetail();
+  } catch (error) { $('logTable').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+function paintLogDetail() {
+  const container = $('logDetail'); if (!container) return;
+  const item = state.logs.items.find(entry => entry.id === state.logs.selected);
+  container.innerHTML = item ? `<div class="detail-box"><b>#${item.id} ${esc(item.category_name)} · ${esc(item.action)}</b>\n${esc(item.message)}\n\n${esc(objText(item.detail))}</div>` : '';
+}
+
+/* ------------------------------------------------------------------ */
+/* Data source configuration                                          */
+/* ------------------------------------------------------------------ */
+function renderDataSources() {
+  if (!state.sources) state.sources = { list: [], selected: null, config: null, jobs: [], runs: [] };
+  setHeading('数据源配置', 'API 类型数据源、测试/生产地址切换、采集调度与运行历史', '管理配置', '已上线');
+  $('pageContent').innerHTML = `
+    <div class="split">
+      <section class="panel card">
+        <div class="card-head"><div><h2>API 数据源</h2><p>测试数据来自内置 fixture API</p></div><button id="newSource" class="btn primary small">新建</button></div>
+        <div id="sourceList" class="list"><div class="loading">正在加载数据源...</div></div>
+      </section>
+      <section id="sourceConfig" class="panel card"><div class="loading">请选择数据源</div></section>
+    </div>`;
+  $('newSource').onclick = openSourceModal;
+  $('sourceList').onclick = event => { const item = event.target.closest('[data-source-id]'); if (item) { state.sources.selected = Number(item.dataset.sourceId); loadSourcePanel(); } };
+  loadSources();
+}
+async function loadSources() {
+  try {
+    const page = await request('/datasources');
+    const list = (page.items || []).filter(source => source.type === 'api');
+    state.sources.list = list;
+    if (!list.some(source => source.id === state.sources.selected)) state.sources.selected = list.length ? list[0].id : null;
+    $('sourceList').innerHTML = list.length ? list.map(source => `<button class="list-item ${source.id === state.sources.selected ? 'active' : ''}" data-source-id="${source.id}"><b>${esc(source.name)}</b><small>${esc(source.description || source.host || 'API 数据源')}</small><div class="list-meta">${badge('API', 'green')}<span class="muted" style="font-size:10.5px">${esc(source.status)}</span></div></button>`).join('') : '<div class="empty">尚未配置 API 数据源</div>';
+    await loadSourcePanel();
+  } catch (error) { $('sourceConfig').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+async function loadSourcePanel() {
+  const id = state.sources.selected;
+  if (!id) { $('sourceConfig').innerHTML = '<div class="empty">尚未配置 API 数据源，点击左上角新建</div>'; return; }
+  $('sourceConfig').innerHTML = '<div class="loading">正在加载数据源配置...</div>';
+  try {
+    const [config, jobs, runs] = await Promise.all([
+      request(`/datasources/${id}/api-config`),
+      request(`/collection-jobs?datasource_id=${id}`),
+      request(`/collection-jobs/runs/all?datasource_id=${id}&limit=10`)
+    ]);
+    state.sources.config = config; state.sources.jobs = jobs; state.sources.runs = runs;
+    renderSourcePanel();
+  } catch (error) { $('sourceConfig').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+function renderSourcePanel() {
+  const config = state.sources.config, jobs = state.sources.jobs, runs = state.sources.runs;
+  if (!config) return;
+  $('sourceConfig').innerHTML = `
+    <div class="card-head"><div><h2>${esc(config.name)}</h2><p>当前解析地址：<span class="table-link">${esc(config.resolved_base_url || '-')}</span></p></div><div class="chips">${badge('模式 ' + config.mode, config.mode === 'production' ? 'warn' : 'good')}${config.has_auth_token ? badge('已配置鉴权', 'green') : ''}</div></div>
+    <div class="form-grid">
+      <div class="field"><label for="cfgMode">运行环境</label><select id="cfgMode" class="input"><option value="test">测试环境</option><option value="production">生产环境</option></select></div>
+      <div class="field"><label for="cfgPageSize">分页大小</label><input id="cfgPageSize" class="input" type="number" min="50" max="5000" value="${Number(config.page_size || 500)}"></div>
+      <div class="field"><label for="cfgTestUrl">测试环境地址</label><input id="cfgTestUrl" class="input" value="${esc(config.test_base_url || '')}" placeholder="http://127.0.0.1:8100"></div>
+      <div class="field"><label for="cfgProdUrl">生产环境地址</label><input id="cfgProdUrl" class="input" value="${esc(config.production_base_url || '')}" placeholder="https://metadata.example.com"></div>
+      <div class="field"><label for="cfgAuthType">鉴权方式</label><select id="cfgAuthType" class="input"><option value="none">无鉴权</option><option value="api_key">API Key</option><option value="bearer">Bearer Token</option></select></div>
+      <div class="field"><label for="cfgAuthHeader">鉴权 Header</label><input id="cfgAuthHeader" class="input" value="${esc(config.auth_header || 'X-API-Key')}"></div>
+      <div class="field"><label for="cfgToken">鉴权 Token</label><input id="cfgToken" class="input" type="password" placeholder="${config.has_auth_token ? '已配置，留空保持不变' : '可选'}"></div>
+    </div>
+    <div class="sub-head">采集资产</div>
+    <div class="chips" style="margin-bottom:12px">
+      <label class="check"><input type="checkbox" id="cfgAssetTables" checked><span>元数据表</span></label>
+      <label class="check"><input type="checkbox" id="cfgAssetColumns" checked><span>字段元数据</span></label>
+      <label class="check"><input type="checkbox" id="cfgAssetLineage" checked><span>表级血缘</span></label>
+    </div>
+    <div class="toolbar" style="margin-top:0">
+      <button id="cfgSave" class="btn primary small">保存配置</button>
+      <button id="cfgTest" class="btn small">测试连接</button>
+      <button id="cfgCollect" class="btn small">立即采集</button>
+    </div>
+    <div class="sub-head" style="display:flex;justify-content:space-between;align-items:center">采集调度任务 <button id="newJob" class="btn small">新建调度</button></div>
+    <div id="jobList" class="step-list">${jobs.length ? jobs.map(job => `<div class="job"><div class="job-head"><b>${esc(job.name)}</b><div class="chips">${job.enabled ? badge('启用', 'good') : badge('停用', 'muted')}${badge(job.last_status, job.last_status === 'success' ? 'good' : job.last_status === 'failed' ? 'bad' : 'muted')}</div></div><div class="job-meta"><span>每 ${job.interval_value} ${job.interval_unit === 'minute' ? '分钟' : job.interval_unit === 'hour' ? '小时' : '天'}</span><span>下次：${job.next_run_at ? esc(formatDate(job.next_run_at)) : '未排期'}</span><span>上次：${job.last_run_at ? esc(formatDate(job.last_run_at)) : '尚未执行'}</span><span>资产：${job.assets.join(' / ')}</span></div>${job.last_error ? `<div class="form-error">${esc(job.last_error)}</div>` : ''}<div class="toolbar" style="margin:8px 0 0"><button class="btn small primary" data-job-run="${job.id}">立即执行</button><button class="btn small" data-job-edit="${job.id}">编辑</button><button class="btn small" data-job-history="${job.id}">运行历史</button><button class="btn small" data-job-toggle="${job.id}" data-enabled="${job.enabled}">${job.enabled ? '停用' : '启用'}</button></div></div>`).join('') : '<div class="empty">尚未配置调度任务</div>'}</div>
+    <div id="jobRuns"></div>
+    <div class="sub-head">最近采集运行</div>
+    <div class="table-wrap small-table"><table><thead><tr><th>开始时间</th><th>触发</th><th>状态</th><th>新增表</th><th>变更表</th><th>新增字段</th><th>字段血缘</th><th>错误</th></tr></thead><tbody>${runs.map(run => `<tr><td class="muted">${esc(formatDate(run.started_at))}</td><td>${esc(run.trigger_type)}</td><td>${badge(run.status, run.status === 'success' ? 'good' : run.status === 'failed' ? 'bad' : 'warn')}</td><td>${run.tables_new}</td><td>${run.tables_changed}</td><td>${run.columns_new}</td><td>${run.column_lineage_new}</td><td class="muted">${esc(run.error_message || '-')}</td></tr>`).join('') || emptyRow(8, '暂无运行记录')}</tbody></table></div>`;
+  $('cfgMode').value = config.mode || 'test';
+  $('cfgAuthType').value = config.auth_type || 'none';
+  $('cfgSave').onclick = saveSourceConfig;
+  $('cfgTest').onclick = testSourceConnection;
+  $('cfgCollect').onclick = triggerCollect;
+  $('newJob').onclick = () => openJobModal(null);
+  $('jobList').onclick = async event => {
+    const runButton = event.target.closest('[data-job-run]');
+    if (runButton) return runJob(Number(runButton.dataset.jobRun));
+    const editButton = event.target.closest('[data-job-edit]');
+    if (editButton) return openJobModal(state.sources.jobs.find(job => job.id === Number(editButton.dataset.jobEdit)));
+    const historyButton = event.target.closest('[data-job-history]');
+    if (historyButton) return loadJobRuns(Number(historyButton.dataset.jobHistory));
+    const toggleButton = event.target.closest('[data-job-toggle]');
+    if (toggleButton) {
+      try { await request(`/collection-jobs/${toggleButton.dataset.jobToggle}`, { method: 'PATCH', body: JSON.stringify({ enabled: toggleButton.dataset.enabled !== 'true' }) }); await loadSourcePanel(); }
+      catch (error) { toast(error.message, true); }
+    }
+  };
+}
+async function saveSourceConfig() {
+  const id = state.sources.selected; if (!id) return;
+  const payload = { mode: $('cfgMode').value, test_base_url: $('cfgTestUrl').value.trim(), production_base_url: $('cfgProdUrl').value.trim(), auth_type: $('cfgAuthType').value, auth_header: $('cfgAuthHeader').value.trim() || 'X-API-Key', page_size: Number($('cfgPageSize').value || 500) };
+  const token = $('cfgToken').value.trim(); if (token) payload.auth_token = token;
+  try { await request(`/datasources/${id}/api-config`, { method: 'PUT', body: JSON.stringify(payload) }); toast('数据源配置已保存'); await loadSourcePanel(); }
+  catch (error) { toast(error.message, true); }
+}
+async function testSourceConnection() {
+  const id = state.sources.selected; if (!id) return;
+  try {
+    const result = await request(`/datasources/${id}/api-test`, { method: 'POST' });
+    toast(result.reachable ? `连接成功：${result.base_url}` : `连接失败：${result.error}`, !result.reachable);
+  } catch (error) { toast(error.message, true); }
+}
+async function triggerCollect() {
+  const id = state.sources.selected; if (!id) return;
+  const assets = [];
+  if ($('cfgAssetTables').checked) assets.push('table_info');
+  if ($('cfgAssetColumns').checked) assets.push('column_metadata');
+  if ($('cfgAssetLineage').checked) assets.push('table_lineage');
+  if (!assets.length) return toast('请至少选择一项采集资产', true);
+  try {
+    const result = await request(`/datasources/${id}/collect`, { method: 'POST', body: JSON.stringify({ assets }) });
+    const summary = result.summary || {};
+    toast(summary.status === 'success' ? `采集完成：新增 ${summary.stats?.tables?.new || 0} 表 / ${summary.stats?.columns?.new || 0} 字段` : `采集失败：${summary.error || '未知错误'}`, summary.status !== 'success');
+    await loadSourcePanel();
+  } catch (error) { toast(error.message, true); }
+}
+function openSourceModal() {
+  $('sourceError').textContent = '';
+  showModal('sourceModal');
+}
+async function createSource(event) {
+  event.preventDefault(); $('sourceError').textContent = '';
+  const name = $('sourceName').value.trim(), testUrl = $('sourceTestUrl').value.trim();
+  try {
+    const source = await request('/datasources', { method: 'POST', body: JSON.stringify({ name, type: 'api', host: testUrl, port: 80, config: { mode: 'test', test_base_url: testUrl, production_base_url: '', auth_type: 'none', auth_header: 'X-API-Key', page_size: 500 }, description: $('sourceDesc').value.trim() }) });
+    state.sources.selected = source.id; closeModal('sourceModal'); toast('数据源已创建'); await loadSources();
+  } catch (error) { $('sourceError').textContent = error.message; }
+}
+function openJobModal(job) {
+  $('jobError').textContent = '';
+  $('jobId').value = job ? job.id : '';
+  $('jobName').value = job ? job.name : '全量元数据采集';
+  $('jobEnabled').value = job ? String(job.enabled) : 'false';
+  $('jobUnit').value = job ? job.interval_unit : 'hour';
+  $('jobValue').value = job ? job.interval_value : 1;
+  const assets = job ? job.assets : ['table_info', 'column_metadata', 'table_lineage'];
+  $('jobAssetTables').checked = assets.includes('table_info');
+  $('jobAssetColumns').checked = assets.includes('column_metadata');
+  $('jobAssetLineage').checked = assets.includes('table_lineage');
+  showModal('jobModal');
+}
+async function saveJob(event) {
+  event.preventDefault(); $('jobError').textContent = '';
+  const assets = [];
+  if ($('jobAssetTables').checked) assets.push('table_info');
+  if ($('jobAssetColumns').checked) assets.push('column_metadata');
+  if ($('jobAssetLineage').checked) assets.push('table_lineage');
+  if (!assets.length) { $('jobError').textContent = '请至少选择一项采集资产'; return; }
+  const id = $('jobId').value;
+  const payload = { name: $('jobName').value.trim(), datasource_id: state.sources.selected, assets, interval_unit: $('jobUnit').value, interval_value: Number($('jobValue').value), enabled: $('jobEnabled').value === 'true' };
+  try {
+    if (id) await request(`/collection-jobs/${id}`, { method: 'PATCH', body: JSON.stringify(payload) });
+    else await request('/collection-jobs', { method: 'POST', body: JSON.stringify(payload) });
+    closeModal('jobModal'); toast('调度任务已保存'); await loadSourcePanel();
+  } catch (error) { $('jobError').textContent = error.message; }
+}
+async function runJob(id) {
+  try {
+    const result = await request(`/collection-jobs/${id}/run`, { method: 'POST' });
+    const summary = result.summary || {};
+    toast(summary.status === 'success' ? `任务执行完成：新增 ${summary.stats?.tables?.new || 0} 表 / ${summary.stats?.columns?.new || 0} 字段` : `任务执行失败：${summary.error || '未知错误'}`, summary.status !== 'success');
+    await loadSourcePanel();
+  } catch (error) { toast(error.message, true); }
+}
+async function loadJobRuns(id) {
+  const container = $('jobRuns'); if (!container) return;
+  container.innerHTML = '<div class="loading">正在加载运行历史...</div>';
+  try {
+    const runs = await request(`/collection-jobs/${id}/runs`);
+    container.innerHTML = `<div class="sub-head">调度运行历史</div><div class="table-wrap small-table"><table><thead><tr><th>开始</th><th>状态</th><th>读取行</th><th>写入行</th><th>新增表</th><th>变更表</th><th>字段血缘</th><th>错误</th></tr></thead><tbody>${runs.map(run => `<tr><td class="muted">${esc(formatDate(run.started_at))}</td><td>${badge(run.status, run.status === 'success' ? 'good' : run.status === 'failed' ? 'bad' : 'warn')}</td><td>${run.rows_read}</td><td>${run.rows_written}</td><td>${run.tables_new}</td><td>${run.tables_changed}</td><td>${run.column_lineage_new}</td><td class="muted">${esc(run.error_message || '-')}</td></tr>`).join('') || emptyRow(8, '暂无运行记录')}</tbody></table></div>`;
+  } catch (error) { container.innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Roles and user permissions                                         */
+/* ------------------------------------------------------------------ */
+function renderUserPermissions() {
+  setHeading('用户权限配置', '角色权限模板与用户级功能权限覆盖', '管理配置', '已上线');
+  $('pageContent').innerHTML = `
+    <section class="panel card">
+      <div class="tabs"><button class="tab active" data-authz-tab="roles">角色权限</button><button class="tab" data-authz-tab="users">用户权限</button><button class="tab" data-authz-tab="catalog">权限目录</button></div>
+      <div id="authzContent"><div class="loading">正在加载权限配置...</div></div>
+    </section>`;
+  document.querySelectorAll('[data-authz-tab]').forEach(tab => { tab.onclick = () => { state.authz.tab = tab.dataset.authzTab; document.querySelectorAll('[data-authz-tab]').forEach(item => item.classList.toggle('active', item.dataset.authzTab === state.authz.tab)); paintAuthz(); }; });
+  loadAuthz();
+}
+async function loadAuthz() {
+  try {
+    const [catalog, roles, users] = await Promise.all([request('/permissions'), request('/roles'), request('/users')]);
+    state.authz.catalog = catalog; state.authz.roles = roles; state.authz.users = users; state.users = users;
+    paintAuthz();
+  } catch (error) { $('authzContent').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+function paintAuthz() {
+  const catalog = state.authz.catalog;
+  if (!catalog) return;
+  if (state.authz.tab === 'users') {
+    $('authzContent').innerHTML = `<div class="table-wrap"><table><thead><tr><th>用户</th><th>角色</th><th>状态</th><th>最近登录</th><th>操作</th></tr></thead><tbody>${state.authz.users.map(user => `<tr><td><div class="user-cell"><span class="avatar">${esc(initials(user))}</span><span><b>${esc(user.display_name)}</b><small>@${esc(user.username)}</small></span></div></td><td><select class="role-select" data-authz-user-role="${user.id}" ${user.id === state.user.id ? 'disabled' : ''}>${roleOptions(user.role)}</select></td><td>${user.is_active ? badge('正常', 'good') : badge('停用', 'muted')}</td><td class="muted">${esc(formatDate(user.last_login_at))}</td><td><button class="btn small" data-user-perm="${user.id}">权限覆盖</button></td></tr>`).join('')}</tbody></table></div>`;
+    $('authzContent').onclick = event => { const button = event.target.closest('[data-user-perm]'); if (button) openUserPerms(Number(button.dataset.userPerm)); };
+    $('authzContent').onchange = async event => {
+      const select = event.target.closest('[data-authz-user-role]'); if (!select) return;
+      try { await request(`/users/${select.dataset.authzUserRole}`, { method: 'PATCH', body: JSON.stringify({ role: select.value }) }); toast('用户角色已更新'); await loadAuthz(); }
+      catch (error) { toast(error.message, true); await loadAuthz(); }
+    };
+    return;
+  }
+  if (state.authz.tab === 'catalog') {
+    const groups = {};
+    catalog.items.forEach(item => { (groups[item.group] || (groups[item.group] = [])).push(item); });
+    $('authzContent').innerHTML = Object.entries(groups).map(([group, items]) => `<div class="sub-head">${esc(group)}</div><div class="table-wrap small-table"><table><thead><tr><th>权限码</th><th>名称</th></tr></thead><tbody>${items.map(item => `<tr><td><code>${esc(item.code)}</code></td><td>${esc(item.name)}</td></tr>`).join('')}</tbody></table></div>`).join('');
+    return;
+  }
+  $('authzContent').innerHTML = `<div class="card-head"><div><h2>角色列表</h2><p>系统角色可调整权限，但系统管理员必须保留用户管理权限</p></div><button id="newRole" class="btn primary small">新建角色</button></div><div class="table-wrap"><table><thead><tr><th>角色</th><th>编码</th><th>用户数</th><th>权限数</th><th>类型</th><th>操作</th></tr></thead><tbody>${state.authz.roles.map(role => `<tr><td><b>${esc(role.name)}</b><small class="muted"> ${esc(role.description || '')}</small></td><td><code>${esc(role.code)}</code></td><td>${role.user_count}</td><td>${role.permissions.length}</td><td>${role.is_system ? badge('系统角色', 'warn') : badge('自定义', 'good')}</td><td><div class="table-actions"><button class="btn small" data-role-edit="${role.id}">编辑权限</button>${role.is_system ? '' : `<button class="btn small danger" data-role-delete="${role.id}">删除</button>`}</div></td></tr>`).join('')}</tbody></table></div>`;
+  $('newRole').onclick = () => openRoleModal(null);
+  $('authzContent').onclick = event => {
+    const edit = event.target.closest('[data-role-edit]'); if (edit) return openRoleModal(state.authz.roles.find(role => role.id === Number(edit.dataset.roleEdit)));
+    const remove = event.target.closest('[data-role-delete]'); if (remove) return deleteRole(Number(remove.dataset.roleDelete));
+  };
+}
+function permissionGrid(selected, name) {
+  const catalog = state.authz.catalog; if (!catalog) return '';
+  const groups = {};
+  catalog.items.forEach(item => { (groups[item.group] || (groups[item.group] = [])).push(item); });
+  return Object.entries(groups).map(([group, items]) => `<div style="grid-column:1/-1" class="sub-head">${esc(group)}</div>` + items.map(item => `<label class="check"><input type="checkbox" name="${name}" value="${esc(item.code)}" ${selected.includes(item.code) ? 'checked' : ''}><span>${esc(item.name)}<small>${esc(item.code)}</small></span></label>`).join('')).join('');
+}
+function openRoleModal(role) {
+  $('roleError').textContent = '';
+  $('roleId').value = role ? role.id : '';
+  $('roleCode').value = role ? role.code : '';
+  $('roleCode').readOnly = Boolean(role);
+  $('roleName').value = role ? role.name : '';
+  $('roleDesc').value = role ? role.description || '' : '';
+  $('rolePermGrid').innerHTML = permissionGrid(role ? role.permissions : ['platform:read'], 'rolePerm');
+  showModal('roleModal');
+}
+async function saveRole(event) {
+  event.preventDefault(); $('roleError').textContent = '';
+  const permissions = [...document.querySelectorAll('input[name="rolePerm"]:checked')].map(input => input.value);
+  const id = $('roleId').value;
+  const payload = { name: $('roleName').value.trim(), description: $('roleDesc').value.trim() || null, permissions };
+  try {
+    if (id) await request(`/roles/${id}`, { method: 'PATCH', body: JSON.stringify(payload) });
+    else await request('/roles', { method: 'POST', body: JSON.stringify({ ...payload, code: $('roleCode').value.trim() }) });
+    closeModal('roleModal'); toast('角色权限已保存'); await loadAuthz();
+  } catch (error) { $('roleError').textContent = error.message; }
+}
+async function deleteRole(id) {
+  if (!confirm('确认删除该角色？')) return;
+  try { await request(`/roles/${id}`, { method: 'DELETE' }); toast('角色已删除'); await loadAuthz(); }
+  catch (error) { toast(error.message, true); }
+}
+async function openUserPerms(id) {
+  try {
+    const data = await request(`/users/${id}/permissions`);
+    const user = state.authz.users.find(item => item.id === id);
+    $('userPermUserId').value = id;
+    $('userPermSub').textContent = `${user ? user.display_name : data.username} · 角色：${roleName(data.role)} · 有效权限 ${data.effective_permissions.length} 项`;
+    const overrides = {}; data.overrides.forEach(item => { overrides[item.permission] = item.effect; });
+    const groups = {};
+    state.authz.catalog.items.forEach(item => { (groups[item.group] || (groups[item.group] = [])).push(item); });
+    $('userPermGrid').innerHTML = Object.entries(groups).map(([group, items]) => `<div style="grid-column:1/-1" class="sub-head">${esc(group)}</div>` + items.map(item => {
+      const effect = overrides[item.code] || 'inherit';
+      const inherited = data.role_permissions.includes(item.code) ? '角色已授权' : '角色未授权';
+      return `<div class="check" style="align-items:center"><span style="flex:1">${esc(item.name)}<small>${esc(inherited)} · ${esc(item.code)}</small></span><select class="input" style="width:82px;padding:3px 6px;font-size:11px" data-override="${esc(item.code)}"><option value="inherit" ${effect === 'inherit' ? 'selected' : ''}>继承</option><option value="allow" ${effect === 'allow' ? 'selected' : ''}>允许</option><option value="deny" ${effect === 'deny' ? 'selected' : ''}>拒绝</option></select></div>`;
+    }).join('')).join('');
+    $('userPermError').textContent = '';
+    showModal('userPermModal');
+  } catch (error) { toast(error.message, true); }
+}
+async function saveUserPerms(event) {
+  event.preventDefault(); $('userPermError').textContent = '';
+  const overrides = [...document.querySelectorAll('[data-override]')].filter(select => select.value !== 'inherit').map(select => ({ permission: select.dataset.override, effect: select.value }));
+  try {
+    await request(`/users/${$('userPermUserId').value}/permissions`, { method: 'PUT', body: JSON.stringify({ overrides }) });
+    closeModal('userPermModal'); toast('用户权限覆盖已保存'); await loadAuthz();
+  } catch (error) { $('userPermError').textContent = error.message; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Modal & form wiring                                                */
+/* ------------------------------------------------------------------ */
+function showModal(id) { const layer = $(id); if (layer) layer.classList.remove('hidden'); }
+function closeModal(id) { const layer = $(id); if (layer) layer.classList.add('hidden'); }
+document.querySelectorAll('[data-close-modal]').forEach(button => {
+  button.addEventListener('click', () => closeModal(button.dataset.closeModal));
+});
+document.querySelectorAll('.modal-backdrop').forEach(layer => {
+  layer.addEventListener('click', event => { if (event.target === layer) layer.classList.add('hidden'); });
+});
+$('sourceForm').addEventListener('submit', createSource);
+$('jobForm').addEventListener('submit', saveJob);
+$('roleForm').addEventListener('submit', saveRole);
+$('userPermForm').addEventListener('submit', saveUserPerms);
+
+Object.assign(PAGE_RENDERERS, {
+  'asset-inventory': renderAssets,
+  'metadata-lineage': renderMetadata,
+  'quality': renderQuality,
+  'warehouse-modeling': renderWarehouse,
+  'ontology-modeling': renderOntology,
+  'log-query': renderLogs,
+  'datasource-config': renderDataSources,
+  'user-permissions': renderUserPermissions,
+  'user-center': renderUserCenter
+});
 
 $('loginForm').addEventListener('submit', async event => {
   event.preventDefault(); $('loginError').textContent = ''; $('loginButton').disabled = true; $('loginButton').textContent = '正在登录...';

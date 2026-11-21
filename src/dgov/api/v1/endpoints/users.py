@@ -15,7 +15,7 @@ router = APIRouter(
 @router.get("", response_model=list[UserRead])
 async def list_users(session: SessionDep, manager: UserManagerDep) -> list[UserRead]:
     users = await service.list_users(session)
-    return [service.to_user_read(user) for user in users]
+    return [await service.to_user_read(session, user) for user in users]
 
 
 @router.post("", response_model=UserRead, status_code=status.HTTP_201_CREATED)
@@ -23,7 +23,7 @@ async def create_user(
     payload: UserCreate, session: SessionDep, manager: UserManagerDep
 ) -> UserRead:
     user = await service.create_user(session, payload)
-    return service.to_user_read(user)
+    return await service.to_user_read(session, user)
 
 
 @router.patch("/{user_id}", response_model=UserRead)
@@ -39,7 +39,7 @@ async def update_user(
     if changes.get("is_active") is False:
         await service.logout_user_sessions(session, user.id)
     user = await service.update_user(session, user, payload)
-    return service.to_user_read(user)
+    return await service.to_user_read(session, user)
 
 
 @router.post("/{user_id}/reset-password", response_model=MessageResponse)

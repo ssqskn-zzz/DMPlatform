@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Query, Response, status
 
-from dgov.api.deps import SessionDep
+from dgov.api.deps import ConfigManagerDep, SessionDep
 from dgov.schemas import DataSourceCreate, DataSourceRead, DataSourceUpdate, Page
 from dgov.services import datasource as service
 
@@ -21,7 +21,9 @@ async def list_data_sources(
 
 
 @router.post("", response_model=DataSourceRead, status_code=status.HTTP_201_CREATED)
-async def create_data_source(payload: DataSourceCreate, session: SessionDep) -> DataSourceRead:
+async def create_data_source(
+    payload: DataSourceCreate, session: SessionDep, manager: ConfigManagerDep
+) -> DataSourceRead:
     return await service.create_data_source(session, payload)
 
 
@@ -32,12 +34,17 @@ async def get_data_source(data_source_id: int, session: SessionDep) -> DataSourc
 
 @router.patch("/{data_source_id}", response_model=DataSourceRead)
 async def update_data_source(
-    data_source_id: int, payload: DataSourceUpdate, session: SessionDep
+    data_source_id: int,
+    payload: DataSourceUpdate,
+    session: SessionDep,
+    manager: ConfigManagerDep,
 ) -> DataSourceRead:
     return await service.update_data_source(session, data_source_id, payload)
 
 
 @router.delete("/{data_source_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_data_source(data_source_id: int, session: SessionDep) -> Response:
+async def delete_data_source(
+    data_source_id: int, session: SessionDep, manager: ConfigManagerDep
+) -> Response:
     await service.delete_data_source(session, data_source_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

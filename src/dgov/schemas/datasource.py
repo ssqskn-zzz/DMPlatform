@@ -1,17 +1,18 @@
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class DataSourceBase(BaseModel):
     name: str = Field(min_length=1, max_length=128)
-    type: str = Field(max_length=32, description="mysql / postgresql / hive / clickhouse / ...")
-    host: str = Field(max_length=255)
+    type: str = Field(max_length=32, description="mysql / postgresql / hive / clickhouse / api")
+    host: str = Field(default="", max_length=255)
     port: int = Field(default=3306, ge=1, le=65535)
     database: str | None = None
     username: str | None = None
     extra: dict[str, Any] | None = None
+    config: dict[str, Any] | None = None
     description: str | None = None
 
 
@@ -28,6 +29,7 @@ class DataSourceUpdate(BaseModel):
     username: str | None = None
     password: str | None = None
     extra: dict[str, Any] | None = None
+    config: dict[str, Any] | None = None
     description: str | None = None
     status: str | None = None
 
@@ -39,3 +41,9 @@ class DataSourceRead(DataSourceBase):
     status: str
     created_at: datetime
     updated_at: datetime
+
+    @model_validator(mode="after")
+    def mask_secrets(self) -> "DataSourceRead":
+        if self.config and self.config.get("auth_token"):
+            self.config = {**self.config, "auth_token": "******"}
+        return self

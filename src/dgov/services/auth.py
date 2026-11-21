@@ -7,18 +7,14 @@ from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dgov.core.exceptions import AuthenticationError, BadRequestError, ConflictError, NotFoundError
-from dgov.models.auth import AuthSession, PlatformUser
+from dgov.models.auth import AuthSession, PlatformRole, PlatformUser
 from dgov.models.base import utcnow
 from dgov.schemas.auth import UserCreate, UserRead, UserUpdate
+from dgov.services import authz
 
 DEFAULT_PASSWORD = "abc123456789"
 PASSWORD_ITERATIONS = 240_000
 SESSION_TTL = timedelta(hours=12)
-ROLE_PERMISSIONS = {
-    "admin": ["platform:read", "governance:write", "config:write", "users:manage"],
-    "governance": ["platform:read", "governance:write", "config:write"],
-    "viewer": ["platform:read"],
-}
 DEFAULT_USERS = (
     ("admin", "系统管理员", "admin"),
     ("governance", "治理专员", "governance"),
@@ -26,11 +22,7 @@ DEFAULT_USERS = (
 )
 
 
-def permissions_for(role: str) -> list[str]:
-    return ROLE_PERMISSIONS.get(role, [])
-
-
-def to_user_read(user: PlatformUser) -> UserRead:
+async def to_user_read(session: AsyncSession, user: PlatformUser) -> UserRead:
     return UserRead(
         id=user.id,
         username=user.username,
@@ -39,7 +31,7 @@ def to_user_read(user: PlatformUser) -> UserRead:
         is_active=user.is_active,
         last_login_at=user.last_login_at,
         created_at=user.created_at,
-        permissions=permissions_for(user.role),
+        permissions=await authz.effective_permissions(session, user),
     )
 
 
@@ -65,6 +57,7 @@ def _token_hash(token: str) -> str:
 
 
 async def seed_default_users(session: AsyncSession) -> None:
+    await authz.seed_roles(session)
     for username, display_name, role in DEFAULT_USERS:
         result = await session.execute(select(PlatformUser).where(PlatformUser.username == username))
         if result.scalar_one_or_none() is not None:
@@ -155,6 +148,11 @@ async def create_user(session: AsyncSession, payload: UserCreate) -> PlatformUse
     result = await session.execute(select(PlatformUser).where(PlatformUser.username == payload.username))
     if result.scalar_one_or_none() is not None:
         raise ConflictError("用户名已存在")
+    role = (
+        await session.execute(select(PlatformRole).where(PlatformRole.code == payload.role))
+    ).scalar_one_or_none()
+    if role is None:
+        raise BadRequestError("角色不存在")
     user = PlatformUser(
         username=payload.username,
         display_name=payload.display_name,
@@ -169,6 +167,12 @@ async def create_user(session: AsyncSession, payload: UserCreate) -> PlatformUse
 
 async def update_user(session: AsyncSession, user: PlatformUser, payload: UserUpdate) -> PlatformUser:
     changes = payload.model_dump(exclude_unset=True)
+    if "role" in changes:
+        role = (
+            await session.execute(select(PlatformRole).where(PlatformRole.code == changes["role"]))
+        ).scalar_one_or_none()
+        if role is None:
+            raise BadRequestError("角色不存在")
     for field, value in changes.items():
         setattr(user, field, value)
     await session.commit()

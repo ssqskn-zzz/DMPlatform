@@ -1,0 +1,3 @@
+tenant_id,tenant_name,source_schema,source_table_id,source_table,target_schema,target_table_id,target_table,lingeage_type,createtime,updatetime,pt
+T-DEMO,示例租户,ods,12900,ods_SRC28_SRC52_full_for_SRC69_df,dwd,2077,dwd_SRC28_SRC52_SRC53_m_df,1,2026-11-01 00:00:00,2026-11-20 00:00:00,2026-11-20
+T-DEMO,示例租户,dwd,2077,dwd_SRC28_SRC52_SRC53_m_df,ads,824,ads_SRC28_SRC52_SRC53_m_df,1,2026-11-01 00:00:00,2026-11-20 00:00:00,2026-11-20
