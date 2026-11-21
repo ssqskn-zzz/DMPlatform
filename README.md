@@ -28,9 +28,23 @@ cp .env.example .env
 uvicorn dgov.main:app --reload
 ```
 
+- 工作台：http://localhost:8000
 - API 文档：http://localhost:8000/docs
 - 健康检查：`GET /health`、`GET /health/infra`
 - Neo4j Browser：http://localhost:7474
+
+## 平台登录与角色
+
+首次启动自动创建以下账号，默认密码均为 `abc123456789`：
+
+| 用户名 | 角色 | 权限 |
+| --- | --- | --- |
+| `admin` | 系统管理员 | 平台访问、治理配置、用户管理 |
+| `governance` | 治理专员 | 平台访问、治理与配置 |
+| `viewer` | 只读用户 | 平台访问与个人密码管理 |
+
+除 `POST /api/v1/auth/login` 和健康检查外，业务 API 均需携带 `Authorization: Bearer <token>`。
+工作台已接入两大引擎、11 项应用功能和 6 项管理配置入口；除用户中心外，当前均为功能占位页。
 
 ## 目录结构
 
