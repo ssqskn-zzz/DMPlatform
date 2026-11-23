@@ -8,7 +8,13 @@ from dgov.schemas.catalog import StandardCreate, StandardUpdate
 
 
 async def list_standards(
-    session: AsyncSession, page: int, page_size: int, keyword: str | None = None
+    session: AsyncSession,
+    page: int,
+    page_size: int,
+    keyword: str | None = None,
+    *,
+    category: str | None = None,
+    active: bool | None = None,
 ) -> tuple[list[DataStandard], int]:
     stmt = select(DataStandard)
     count_stmt = select(func.count()).select_from(DataStandard)
@@ -19,6 +25,13 @@ async def list_standards(
         )
         stmt = stmt.where(condition)
         count_stmt = count_stmt.where(condition)
+    if category:
+        stmt = stmt.where(DataStandard.category == category)
+        count_stmt = count_stmt.where(DataStandard.category == category)
+    if active is not None:
+        status = "active" if active else "archived"
+        stmt = stmt.where(DataStandard.status == status)
+        count_stmt = count_stmt.where(DataStandard.status == status)
     total = (await session.execute(count_stmt)).scalar_one()
     result = await session.execute(
         stmt.order_by(DataStandard.id.desc()).offset((page - 1) * page_size).limit(page_size)

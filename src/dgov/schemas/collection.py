@@ -97,6 +97,10 @@ class IngestRunRead(BaseModel):
 
 class CollectRequest(BaseModel):
     assets: list[str] = Field(default_factory=lambda: list(SOURCE_ASSETS))
+    since: str | None = Field(
+        default=None,
+        description="增量水位（updatetime）；传入即按增量模式采集血缘，空则取数据源已保存的水位",
+    )
 
     @field_validator("assets")
     @classmethod

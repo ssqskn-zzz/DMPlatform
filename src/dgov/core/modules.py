@@ -42,7 +42,18 @@ MODULE_GROUPS: list[dict[str, Any]] = [
                 "description": "表与字段元数据、表级与字段级血缘",
                 "implemented": True,
             },
-            {"id": "standards", "name": "标准规范", "description": "数据标准与规范落标"},
+            {
+                "id": "lineage-insight",
+                "name": "血缘智能巡检",
+                "description": "任务血缘增量采集、规范校验、问题识别与反馈告警",
+                "implemented": True,
+            },
+            {
+                "id": "standards",
+                "name": "标准规范",
+                "description": "数据标准与血缘关系开发规范维护",
+                "implemented": True,
+            },
             {"id": "classification", "name": "分级分类", "description": "数据分类分级与敏感标识"},
             {"id": "metrics", "name": "指标及业务口径", "description": "指标定义、版本与业务口径"},
             {
@@ -97,7 +108,12 @@ MODULE_GROUPS: list[dict[str, Any]] = [
             },
             {"id": "api-config", "name": "API 配置", "description": "平台接口与服务连接配置"},
             {"id": "metamodel-config", "name": "元模型配置", "description": "元模型实体与属性配置"},
-            {"id": "agent-config", "name": "智能体配置", "description": "智能体注册与服务编排配置"},
+            {
+                "id": "agent-config",
+                "name": "智能体配置",
+                "description": "智能体 API 端点注册、连通性测试与调用评测",
+                "implemented": True,
+            },
         ],
     },
 ]
@@ -117,6 +133,10 @@ ACTION_PERMISSIONS: list[dict[str, str]] = [
     {"code": "users:manage", "name": "用户管理", "group": "安全"},
     {"code": "authz:manage", "name": "角色与授权管理", "group": "安全"},
     {"code": "logs:read", "name": "日志查询", "group": "审计"},
+    {"code": "agent:manage", "name": "智能体端点管理", "group": "智能体"},
+    {"code": "lineage.flow:write", "name": "巡检流程配置", "group": "血缘巡检"},
+    {"code": "lineage.flow:run", "name": "触发巡检流程", "group": "血缘巡检"},
+    {"code": "lineage.issue:review", "name": "血缘问题复核", "group": "血缘巡检"},
 ]
 
 PERMISSION_CATALOG: list[dict[str, str]] = [
@@ -151,6 +171,9 @@ ROLE_DEFAULTS: dict[str, dict[str, Any]] = {
             "config:write",
             "collection:run",
             "logs:read",
+            "lineage.flow:write",
+            "lineage.flow:run",
+            "lineage.issue:review",
             *[
                 module_permission(item["id"])
                 for item in ALL_MODULES
@@ -185,6 +208,7 @@ ROLE_DEFAULTS: dict[str, dict[str, Any]] = {
                     "data-service",
                     "log-query",
                     "user-center",
+                    "lineage-insight",
                 }
             ],
         ],

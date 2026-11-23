@@ -47,6 +47,9 @@ async def run_due_jobs(session: AsyncSession) -> int:
     if not due:
         return 0
     for job in due:
+        job_id = job.id
+        job_name = job.name
+        assets = list(job.assets or [])
         datasource = await session.get(DataSource, job.datasource_id)
         job.last_run_at = utcnow()
         job.next_run_at = next_run_at(job.interval_unit, job.interval_value)
@@ -59,22 +62,22 @@ async def run_due_jobs(session: AsyncSession) -> int:
                 session,
                 category="datasource_schedule",
                 action="schedule.skipped",
-                message=f"调度任务「{job.name}」跳过：数据源不可用",
+                message=f"调度任务「{job_name}」跳过：数据源不可用",
                 level="warning",
                 actor="scheduler",
                 resource_type="collection_job",
-                resource_id=job.id,
+                resource_id=job_id,
             )
             continue
         run, summary = await run_collection(
             session,
             datasource,
-            list(job.assets or []),
+            assets,
             trigger_type="schedule",
-            job_id=job.id,
+            job_id=job_id,
             actor="scheduler",
         )
-        job = await session.get(CollectionJob, job.id)
+        job = await session.get(CollectionJob, job_id)
         job.last_status = summary.get("status", "unknown")
         job.last_error = summary.get("error")
         await session.commit()
@@ -103,6 +106,12 @@ async def _loop() -> None:
                 async with SessionFactory() as session:
                     await run_due_jobs(session)
                     await _maintenance(session)
+                    try:
+                        from dgov.services.lineage_insight import run_due_flows
+
+                        await run_due_flows(session)
+                    except Exception:
+                        logger.exception("scheduled lineage insight tick failed")
         except asyncio.CancelledError:
             raise
         except Exception:  # keep the scheduler alive on transient failures

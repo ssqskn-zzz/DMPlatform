@@ -26,6 +26,7 @@ from dgov.services.metadata_client import (
 from dgov.services.scheduler import ensure_schedule
 
 router = APIRouter(prefix="/collection-jobs", tags=["collection"])
+DEFAULT_COLLECT_REQUEST = CollectRequest()
 datasource_router = APIRouter(prefix="/datasources", tags=["datasources"])
 
 
@@ -313,18 +314,23 @@ async def test_api_connection(
 @datasource_router.post("/{datasource_id}/collect")
 async def collect_datasource(
     datasource_id: int,
-    payload: CollectRequest,
     session: SessionDep,
     runner: CollectionRunnerDep,
+    payload: CollectRequest = DEFAULT_COLLECT_REQUEST,
 ) -> dict:
     datasource = await session.get(DataSource, datasource_id)
     if datasource is None:
         raise NotFoundError("数据源不存在")
+    # Only an explicit ``since`` switches to incremental lineage collection;
+    # the default full collection keeps its original behaviour.
+    since = payload.since
+    assets = ["table_lineage"] if since else payload.assets
     run, summary = await run_collection(
         session,
         datasource,
-        payload.assets,
+        assets,
         trigger_type="manual",
         actor=runner.username,
+        since=since,
     )
     return {"summary": summary, "run": IngestRunRead.model_validate(run).model_dump(mode="json")}

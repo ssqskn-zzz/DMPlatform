@@ -82,7 +82,8 @@ async def test_platform_catalog_contains_all_requested_modules(client: AsyncClie
     groups = {group["key"]: group["items"] for group in response.json()}
     assert set(groups) == {"engines", "applications", "configurations"}
     assert len(groups["engines"]) == 2
-    assert len(groups["applications"]) == 12
+    # +1: 血缘智能巡检（治理引擎下新增应用功能）
+    assert len(groups["applications"]) == 13
     assert len(groups["configurations"]) == 6
 
     names = {item["name"] for items in groups.values() for item in items}
@@ -91,6 +92,7 @@ async def test_platform_catalog_contains_all_requested_modules(client: AsyncClie
         "Agent 就绪引擎",
         "总览视图",
         "资产盘点",
+        "血缘智能巡检",
         "元数据及血缘",
         "标准规范",
         "分级分类",
@@ -117,6 +119,7 @@ async def test_platform_catalog_contains_all_requested_modules(client: AsyncClie
     assert implemented == {
         "asset-inventory",
         "metadata-lineage",
+        "lineage-insight",
         "quality",
         "warehouse-modeling",
         "ontology-modeling",
@@ -124,6 +127,8 @@ async def test_platform_catalog_contains_all_requested_modules(client: AsyncClie
         "user-center",
         "user-permissions",
         "datasource-config",
+        "standards",
+        "agent-config",
     }
     assert all(
         not item.get("implemented")

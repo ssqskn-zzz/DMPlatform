@@ -1,0 +1,17 @@
+﻿tenant_id,tenant_name,source_schema,source_table_id,source_table,target_schema,target_table_id,target_table,lingeage_type,createtime,updatetime,pt
+1021,租户D,库09,10230,tmp_investment_enterprise_info_df,库09,12655,dq_monitor_4nps7clv1ddk_1618,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1021,租户D,库09,12654,dim_SRC11_SRC34_SRC33_detail_df,库09,12655,dq_monitor_4nps7clv1ddk_1618,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1021,租户D,库09,12654,dim_SRC11_SRC34_SRC33_detail_df,库09,12655,dq_monitor_4nps7clv1ddk_1618,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1021,租户D,库09,12654,dim_SRC11_SRC34_SRC33_detail_df,库09,12655,dq_monitor_4nps7clv1ddk_1618,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1021,租户D,库09,10230,tmp_investment_enterprise_info_df,库09,12655,dq_monitor_4nps7clv1ddk_1618,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1021,租户D,库09,12652,ods_SRC11_SRC34_product_cashflow_df,库09,12655,dq_monitor_4nps7clv1ddk_1618,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1021,租户D,库09,10230,tmp_investment_enterprise_info_df,库09,12655,dq_monitor_4nps7clv1ddk_1618,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1021,租户D,库05,11720,dq_monitor_4ne31k8juk5d_1622,库05,11721,dq_monitor_4ne31k8juk5d_1621,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1021,租户D,库09,10230,tmp_investment_enterprise_info_df,库09,12655,dq_monitor_4nps7clv1ddk_1618,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1021,租户D,库05,9855,ods_SRC21_SRC15_xiamen_SRC43_SRC31_df,库05,9861,ods_SRC21_SRC15_SRC42_details_dt_df,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1029,租户C,库06,14317,dq_monitor_4o9b9e9bteek_1622,库06,14323,dwd_SRC21_SRC23_belong_group_SRC25_quota_df,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1029,租户C,库07,17423,dq_monitor_4p4rciu15h6r_1618,库07,18883,dim_SRC02_resource_cur_usage_info_df,1,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1029,租户C,库14,2752,ods_SRC15_local_state_owned_ent_debt_risk_monitor_df,库14,12175,dq_monitor_4njnp0jj6nna_1618,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1029,租户C,库07,12900,ods_SRC28_SRC52_full_for_SRC69_df,库07,12899,dwd_SRC63_SRC48_accountaging_df,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1029,租户C,库14,2752,ods_SRC15_local_state_owned_ent_debt_risk_monitor_df,库14,12175,dq_monitor_4njnp0jj6nna_1618,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118
+1029,租户C,库14,2752,ods_SRC15_local_state_owned_ent_debt_risk_monitor_df,库14,12175,dq_monitor_4njnp0jj6nna_1618,0,2026-11-19 06:16:40.268,2026-11-19 06:16:40.268,20261118

@@ -1106,6 +1106,242 @@ async function saveUserPerms(event) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Lineage development specs                                          */
+/* ------------------------------------------------------------------ */
+function renderLineageSpecs() {
+  setHeading('标准规范', '血缘关系开发规范维护：任务名与表名一致、血缘为任务间依赖', '应用功能', '已上线');
+  $('pageContent').innerHTML = `
+    <div id="specStats" class="grid-stats"></div>
+    <section class="panel card">
+      <div class="card-head"><div><h2>当前生效规范</h2><p>调用智能体解析 / 识别时，规范与表级血缘数据一并传入</p></div></div>
+      <div id="specActive"><div class="loading">正在加载...</div></div>
+    </section>
+    <section class="panel card">
+      <div class="card-head"><div><h2>历史版本</h2><p>发布新版本不会改变历史巡检运行所依据的规范</p></div></div>
+      <div id="specHistory" class="table-wrap"></div>
+    </section>
+    ${can('lineage.flow:write') ? `<section class="panel card">
+      <div class="card-head"><div><h2>发布新版本</h2><p>条款每行一条；全文留空则沿用默认规范模板</p></div></div>
+      <form id="specPublishForm" class="form-grid">
+        <div class="field"><label for="specName">规范名称</label><input id="specName" class="input" placeholder="血缘关系开发规范 v2"></div>
+        <div class="field"><label for="specClauses">结构化条款（每行一条，随 API 传给智能体）</label><textarea id="specClauses" class="input" rows="6"></textarea></div>
+        <div class="field"><label for="specFullText">规范全文 Markdown（可选）</label><textarea id="specFullText" class="input" rows="4"></textarea></div>
+        <div class="form-actions"><button class="btn primary" type="submit">发布新版本</button></div>
+      </form>
+    </section>` : ''}`;
+  if ($('specPublishForm')) {
+    $('specPublishForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const clauses = $('specClauses').value.split('\n').map(line => line.trim()).filter(Boolean);
+      if (!clauses.length) { toast('请至少填写一条规范条款', true); return; }
+      try {
+        await request('/lineage-specs/publish', { method: 'POST', body: JSON.stringify({
+          name: $('specName').value.trim(), clauses, full_text: $('specFullText').value
+        }) });
+        toast('新版本已发布，旧版本自动归档'); await loadSpecs();
+      } catch (error) { toast(error.message, true); }
+    });
+  }
+  loadSpecs();
+}
+async function loadSpecs() {
+  try {
+    const [active, history] = await Promise.all([
+      request('/lineage-specs/active'), request('/lineage-specs')
+    ]);
+    $('specStats').innerHTML = [
+      stat('生效版本', esc(active.version), `共 ${history.length} 个历史版本`),
+      stat('结构化条款', active.clauses.length, '随智能体请求下发'),
+      stat('规范状态', active.status === 'active' ? '生效中' : '草稿', active.category)
+    ].join('');
+    $('specActive').innerHTML = `<div class="form-row"><b>${esc(active.name)}</b> ${badge(active.version, 'good')} ${badge(active.status === 'active' ? '生效中' : '归档', active.status === 'active' ? 'good' : 'muted')}</div>
+      <div class="chips">${active.clauses.map((clause, index) => `<span class="chip">${index + 1}. ${esc(clause)}</span>`).join('')}</div>
+      <details style="margin-top:12px"><summary class="muted" style="cursor:pointer">查看规范全文</summary><div class="detail-box">${esc(active.full_text)}</div></details>`;
+    $('specHistory').innerHTML = history.length ? `<table><thead><tr><th>版本</th><th>名称</th><th>状态</th><th>条款数</th></tr></thead><tbody>${history.map(item => `<tr><td>${esc(item.version)}</td><td>${esc(item.name)}</td><td>${badge(item.status, item.status === 'active' ? 'good' : 'muted')}</td><td>${item.clauses.length}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">暂无规范版本</div>';
+  } catch (error) { $('specActive').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Lineage insight pipeline                                           */
+/* ------------------------------------------------------------------ */
+function renderLineageInsight() {
+  if (!state.insight) state.insight = { page: 1, page_size: 15, status: '', code: '', runId: null, tab: 'runs' };
+  setHeading('血缘智能巡检', '任务血缘增量采集 → 解析 → 问题识别 → 反馈告警', '应用功能', '已上线');
+  $('pageContent').innerHTML = `
+    <div id="insightStats" class="grid-stats"></div>
+    <section class="panel card">
+      <div class="card-head"><div><h2>巡检流程</h2><p>阶段顺序、智能体、阈值与告警策略均可配置</p></div>
+        ${can('lineage.flow:run') ? '<button id="insightRunAll" class="btn primary small">立即巡检</button>' : ''}</div>
+      <div id="insightFlows" class="table-wrap"></div>
+    </section>
+    <section class="panel card">
+      <div class="card-head"><div><h2>运行记录与阶段时间线</h2><p>点击一行查看每阶段耗时、规范版本与智能体调用情况</p></div></div>
+      <div id="insightRuns" class="table-wrap"></div>
+      <div id="insightRunDetail"></div>
+    </section>
+    <section class="panel card">
+      <div class="card-head"><div><h2>问题清单与复核</h2><p>高置信问题自动告警；误报标记后按去重键抑制后续告警</p></div></div>
+      <div class="toolbar">
+        <select id="insightStatus" class="input"><option value="">全部状态</option><option value="open">待复核</option><option value="confirmed">已确认</option><option value="ignored">误报</option><option value="resolved">已解决</option></select>
+        <input id="insightCode" class="input" placeholder="问题类型，如 duplicate_edge" value="${esc(state.insight.code)}">
+        <button id="insightSearch" class="btn small">筛选</button>
+      </div>
+      <div id="insightIssues" class="table-wrap"></div>
+      <div id="insightIssuePager" class="pager"></div>
+    </section>
+    <section class="panel card">
+      <div class="card-head"><div><h2>告警记录</h2><p>站内告警，重复与被复核为误报的问题自动抑制</p></div></div>
+      <div id="insightAlerts" class="table-wrap"></div>
+    </section>`;
+  $('insightStatus').value = state.insight.status;
+  $('insightSearch').onclick = () => { const s = state.insight; s.status = $('insightStatus').value; s.code = $('insightCode').value.trim(); s.page = 1; loadInsightIssues(); };
+  $('insightRuns').onclick = event => {
+    const row = event.target.closest('[data-insight-run]'); if (!row) return;
+    state.insight.runId = Number(row.dataset.insightRun); paintInsightRun();
+  };
+  if ($('insightRunAll')) $('insightRunAll').onclick = async () => {
+    try {
+      const flows = await request('/lineage-flows');
+      if (!flows.length) { toast('暂无可运行的巡检流程', true); return; }
+      const result = await request(`/lineage-flows/${flows[0].id}/run`, { method: 'POST', body: JSON.stringify({ force: true }) });
+      toast(`巡检完成：${result.summary.issue_count} 个问题 / ${result.summary.alert_count} 条告警`);
+      await loadInsight();
+    } catch (error) { toast(error.message, true); }
+  };
+  loadInsight();
+}
+async function loadInsight() {
+  try {
+    const data = await request('/lineage-insight/summary');
+    $('insightStats').innerHTML = [
+      stat('巡检运行', fmt(data.runs), `生效流程 ${fmt(data.active_flows)} 个`),
+      stat('发现问题', fmt(data.issues), `待复核 ${fmt(data.open_issues)} 个`),
+      stat('告警', fmt(data.alerts), '按去重键抑制重复告警'),
+      stat('生效规范', esc(data.spec_version), `${fmt(data.spec_clauses)} 条条款`)
+    ].join('');
+    const [flows, runs] = await Promise.all([
+      request('/lineage-flows'), request('/lineage-runs?limit=20')
+    ]);
+    $('insightFlows').innerHTML = flows.length ? `<table><thead><tr><th>流程</th><th>版本</th><th>触发</th><th>阶段</th><th>状态</th></tr></thead><tbody>${flows.map(flow => `<tr><td>${esc(flow.name)}<div class="muted">${esc(flow.code)}</div></td><td>v${flow.version}</td><td>${esc(flow.trigger_type)}</td><td>${(flow.stages || []).length} 步</td><td>${badge(flow.enabled ? '启用' : '停用', flow.enabled ? 'good' : 'muted')}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">暂无流程</div>';
+    state.insight.runs = runs;
+    $('insightRuns').innerHTML = runs.length ? `<table><thead><tr><th>#</th><th>状态</th><th>规范</th><th>问题</th><th>告警</th><th>完成时间</th></tr></thead><tbody>${runs.map(run => `<tr data-insight-run="${run.id}" style="cursor:pointer"><td>${run.id}</td><td>${badge(run.status, run.status === 'completed' ? 'good' : run.status === 'partial' ? 'warn' : 'bad')}${run.degraded ? ' ' + badge('降级', 'warn') : ''}</td><td>${esc(run.spec_version)}</td><td>${run.issue_count}</td><td>${run.alert_count}</td><td class="muted">${esc(formatDate(run.finished_at))}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">还没有巡检运行，点击「立即巡检」</div>';
+    paintInsightRun();
+    await Promise.all([loadInsightIssues(), loadInsightAlerts()]);
+  } catch (error) { $('insightStats').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+function paintInsightRun() {
+  const box = $('insightRunDetail'); if (!box) return;
+  const runs = state.insight.runs || [];
+  const run = runs.find(item => item.id === state.insight.runId) || runs[0];
+  if (!run) { box.innerHTML = ''; return; }
+  state.insight.runId = run.id;
+  box.innerHTML = `<div class="detail-box"><b>运行 #${run.id} · ${esc(run.status)} · 规范 ${esc(run.spec_version)} · 输入指纹 ${esc(run.input_hash)}</b>
+${(run.stages_result || []).map(stage => `\n[${esc(stage.status)}] ${esc(stage.name)} (${stage.elapsed_ms} ms)${stage.call_status && stage.call_status !== 'ok' ? ' · ' + esc(stage.call_status) : ''}\n    ${esc(objText(stage.detail))}`).join('')}</div>`;
+}
+async function loadInsightIssues() {
+  const s = state.insight;
+  try {
+    const data = await request('/lineage-issues?' + query({ status: s.status, code: s.code, page: s.page, page_size: s.page_size }));
+    const canReview = can('lineage.issue:review');
+    $('insightIssues').innerHTML = data.items.length ? `<table><thead><tr><th>类型</th><th>严重度</th><th>置信度</th><th>来源</th><th>说明</th><th>状态</th>${canReview ? '<th>复核</th>' : ''}</tr></thead><tbody>${data.items.map(item => `<tr><td>${esc(item.code)}</td><td>${badge(item.severity, item.severity === 'high' ? 'bad' : item.severity === 'medium' ? 'warn' : 'muted')}</td><td>${Number(item.confidence).toFixed(2)}</td><td>${esc(item.source)}</td><td>${esc(item.title || item.description)}</td><td>${badge(item.status, item.status === 'open' ? 'warn' : item.status === 'ignored' ? 'muted' : 'good')}</td>${canReview ? `<td class="table-actions"><select data-review-id="${item.id}" class="input"><option value="confirmed">确认</option><option value="ignored">误报</option><option value="resolved">已解决</option></select> <button class="btn small" data-review-btn="${item.id}">提交</button></td>` : ''}</tr>`).join('')}</tbody></table>` : '<div class="empty">没有匹配的问题</div>';
+    renderPager('insightIssuePager', data.total, s.page, s.page_size, page => { s.page = page; loadInsightIssues(); });
+    if (canReview) $('insightIssues').onclick = async event => {
+      const button = event.target.closest('[data-review-btn]'); if (!button) return;
+      const id = button.dataset.reviewBtn;
+      const status = document.querySelector(`[data-review-id="${id}"]`).value;
+      try { await request(`/lineage-issues/${id}`, { method: 'PATCH', body: JSON.stringify({ status, review_note: '工作台复核' }) }); toast('复核已保存'); await loadInsight(); }
+      catch (error) { toast(error.message, true); }
+    };
+  } catch (error) { $('insightIssues').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+async function loadInsightAlerts() {
+  try {
+    const data = await request('/lineage-alerts?limit=20');
+    $('insightAlerts').innerHTML = data.length ? `<table><thead><tr><th>#</th><th>级别</th><th>通道</th><th>状态</th><th>问题</th></tr></thead><tbody>${data.map(item => `<tr><td>${item.id}</td><td>${badge(item.level, item.level === 'high' ? 'bad' : 'warn')}</td><td>${esc(item.channel)}</td><td>${badge(item.status, item.status === 'sent' ? 'good' : 'muted')}</td><td>${esc((item.payload || {}).title || item.dedupe_key)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">暂无告警</div>';
+  } catch (error) { $('insightAlerts').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Agent endpoint configuration                                       */
+/* ------------------------------------------------------------------ */
+function renderAgentConfig() {
+  setHeading('智能体配置', '智能体 API 端点注册、连通性测试与调用评测', '管理配置', '已上线');
+  $('pageContent').innerHTML = `
+    <div class="split">
+      <section class="panel card">
+        <div class="card-head"><div><h2>已注册端点</h2><p>端点挂到治理智能体目录，凭据加密存储</p></div></div>
+        <div id="agentList" class="table-wrap"></div>
+      </section>
+      ${can('agent:manage') ? `<section class="panel card">
+        <div class="card-head"><div><h2>注册 / 更新端点</h2><p>内置 Mock 端点使用 internal://mock-agent</p></div></div>
+        <form id="agentForm" class="form-grid">
+          <input type="hidden" id="agentEndpointId">
+          <div class="field"><label for="agentCode">智能体编码</label><input id="agentCode" class="input" placeholder="AG-LINEAGE-01" required></div>
+          <div class="field"><label for="agentName">端点名称</label><input id="agentName" class="input" placeholder="血缘巡检智能体" required></div>
+          <div class="field"><label for="agentBaseUrl">Base URL</label><input id="agentBaseUrl" class="input" placeholder="internal://mock-agent 或 https://..." required></div>
+          <div class="field"><label for="agentAuthType">鉴权方式</label><select id="agentAuthType" class="input"><option value="none">无</option><option value="bearer">Bearer Token</option><option value="api_key">API Key</option></select></div>
+          <div class="field"><label for="agentToken">Token（留空表示不修改）</label><input id="agentToken" class="input" type="password" placeholder="仅在新建或需要重置时填写"></div>
+          <div class="field"><label for="agentModel">模型名</label><input id="agentModel" class="input" placeholder="mock-lineage-agent"></div>
+          <div class="form-actions"><button class="btn primary" type="submit">保存端点</button> <button class="btn small" type="button" id="agentFormReset">新建</button></div>
+          <div id="agentFormError" class="form-error"></div>
+        </form>
+      </section>` : ''}
+    </div>
+    <section class="panel card">
+      <div class="card-head"><div><h2>最近调用评测</h2><p>阶段耗时、token 与命中情况</p></div></div>
+      <div id="agentEvals" class="table-wrap"></div>
+    </section>`;
+  if ($('agentForm')) {
+    $('agentForm').addEventListener('submit', saveAgentEndpoint);
+    $('agentFormReset').onclick = () => resetAgentForm();
+    $('agentList').onclick = event => {
+      const edit = event.target.closest('[data-agent-edit]'); if (edit) { fillAgentForm(edit.dataset.agentEdit); return; }
+      const test = event.target.closest('[data-agent-test]'); if (test) { testAgentEndpoint(test.dataset.agentTest); return; }
+    };
+  }
+  loadAgentEndpoints();
+}
+async function loadAgentEndpoints() {
+  try {
+    const data = await request('/agent-endpoints');
+    state.insight = state.insight || {}; state.insight.endpoints = data;
+    const canManage = can('agent:manage');
+    $('agentList').innerHTML = data.length ? `<table><thead><tr><th>编码</th><th>名称</th><th>地址</th><th>鉴权</th><th>健康</th>${canManage ? '<th>操作</th>' : ''}</tr></thead><tbody>${data.map(item => `<tr><td>${esc(item.agent_code)}</td><td>${esc(item.name)}</td><td class="muted">${esc(item.base_url)}</td><td>${esc(item.auth_type)}${item.has_token ? ' ✓' : ''}</td><td>${badge(item.health_status, item.health_status === 'ok' ? 'good' : item.health_status === 'error' ? 'bad' : 'muted')}</td>${canManage ? `<td class="table-actions"><button class="btn small" data-agent-test="${item.id}">连通性测试</button> <button class="btn small" data-agent-edit="${item.id}">编辑</button></td>` : ''}</tr>`).join('')}</tbody></table>` : '<div class="empty">暂无注册端点</div>';
+    if (data.length) {
+      const evals = await request(`/agent-endpoints/${data[0].id}/evaluations?limit=10`);
+      $('agentEvals').innerHTML = evals.length ? `<table><thead><tr><th>运行</th><th>阶段</th><th>状态</th><th>模型</th><th>耗时</th><th>规范</th></tr></thead><tbody>${evals.map(item => `<tr><td>#${item.run_id}</td><td>${esc(item.stage)}</td><td>${badge(item.status, item.status === 'success' ? 'good' : 'warn')}</td><td>${esc(item.model || '-')}</td><td>${item.elapsed_ms ?? '-'} ms</td><td>${esc(item.spec_version)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">暂无调用记录，运行一次巡检后可见</div>';
+    } else $('agentEvals').innerHTML = '<div class="empty">暂无调用记录</div>';
+  } catch (error) { $('agentList').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+}
+function resetAgentForm() { $('agentEndpointId').value = ''; $('agentForm').reset(); $('agentFormError').textContent = ''; }
+function fillAgentForm(id) {
+  const item = (state.insight.endpoints || []).find(entry => String(entry.id) === String(id));
+  if (!item) return;
+  $('agentEndpointId').value = item.id; $('agentCode').value = item.agent_code; $('agentCode').disabled = true;
+  $('agentName').value = item.name; $('agentBaseUrl').value = item.base_url;
+  $('agentAuthType').value = item.auth_type; $('agentModel').value = item.model || ''; $('agentToken').value = '';
+}
+async function saveAgentEndpoint(event) {
+  event.preventDefault(); $('agentFormError').textContent = '';
+  const id = $('agentEndpointId').value;
+  const body = { name: $('agentName').value.trim(), base_url: $('agentBaseUrl').value.trim(), auth_type: $('agentAuthType').value, model: $('agentModel').value.trim() || null };
+  if (!id) body.agent_code = $('agentCode').value.trim();
+  if ($('agentToken').value) body.auth_token = $('agentToken').value;
+  try {
+    if (id) await request(`/agent-endpoints/${id}`, { method: 'PATCH', body: JSON.stringify(body) });
+    else await request('/agent-endpoints', { method: 'POST', body: JSON.stringify(body) });
+    toast('智能体端点已保存'); $('agentCode').disabled = false; resetAgentForm(); await loadAgentEndpoints();
+  } catch (error) { $('agentFormError').textContent = error.message; }
+}
+async function testAgentEndpoint(id) {
+  try {
+    const result = await request(`/agent-endpoints/${id}/test`, { method: 'POST' });
+    toast(`连通性通过：parse ${result.parse_nodes} 节点 / diagnose ${result.diagnose_issues} 问题`);
+    await loadAgentEndpoints();
+  } catch (error) { toast(error.message, true); await loadAgentEndpoints(); }
+}
+
+/* ------------------------------------------------------------------ */
 /* Modal & form wiring                                                */
 /* ------------------------------------------------------------------ */
 function showModal(id) { const layer = $(id); if (layer) layer.classList.remove('hidden'); }
@@ -1124,6 +1360,9 @@ $('userPermForm').addEventListener('submit', saveUserPerms);
 Object.assign(PAGE_RENDERERS, {
   'asset-inventory': renderAssets,
   'metadata-lineage': renderMetadata,
+  'lineage-insight': renderLineageInsight,
+  'standards': renderLineageSpecs,
+  'agent-config': renderAgentConfig,
   'quality': renderQuality,
   'warehouse-modeling': renderWarehouse,
   'ontology-modeling': renderOntology,

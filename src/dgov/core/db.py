@@ -5,14 +5,16 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from dgov.core.config import settings
 from dgov.models.base import Base
 
-engine = create_async_engine(
-    settings.mysql_dsn,
-    echo=settings.db_echo,
-    pool_pre_ping=True,
-    pool_recycle=3600,
-    pool_size=10,
-    max_overflow=20,
-)
+_engine_kwargs: dict[str, object] = {
+    "echo": settings.db_echo,
+    "pool_pre_ping": True,
+    "pool_recycle": 3600,
+}
+# SQLite (in-memory demo / tests) uses StaticPool and rejects pool_size.
+if not settings.mysql_dsn.startswith("sqlite"):
+    _engine_kwargs.update({"pool_size": 10, "max_overflow": 20})
+
+engine = create_async_engine(settings.mysql_dsn, **_engine_kwargs)
 
 SessionFactory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 

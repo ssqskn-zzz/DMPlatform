@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 
 from dgov.api.deps import get_current_user
 from dgov.api.v1.endpoints import (
+    agent_endpoints,
     assets,
     authz,
     catalog,
@@ -9,6 +10,7 @@ from dgov.api.v1.endpoints import (
     datasources,
     governance,
     lineage,
+    lineage_insight,
     logs,
     ontology,
     ontology_model,
@@ -40,3 +42,5 @@ api_router.include_router(assets.router)
 api_router.include_router(lineage.router)
 api_router.include_router(warehouse.router)
 api_router.include_router(logs.router)
+api_router.include_router(agent_endpoints.router)
+api_router.include_router(lineage_insight.router)

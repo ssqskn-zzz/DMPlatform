@@ -22,6 +22,7 @@ ASSET_LABELS = {
     "table_lineage": "表级血缘",
 }
 SOURCE_ASSETS = tuple(DEFAULT_ENDPOINTS)
+INTERNAL_MOCK_BASE = "internal://mock-metadata"
 
 
 def source_config(datasource: DataSource) -> dict[str, Any]:
@@ -41,6 +42,8 @@ def resolve_base_url(datasource: DataSource) -> str:
         raise BadRequestError(
             f"数据源未配置 {key}，请在数据源配置中补全{('测试' if mode == 'test' else '生产')}环境地址"
         )
+    if base_url == INTERNAL_MOCK_BASE:
+        return base_url
     if not base_url.startswith(("http://", "https://")):
         raise BadRequestError("数据源地址必须以 http:// 或 https:// 开头")
     return base_url.rstrip("/")
@@ -78,6 +81,16 @@ class MetadataApiClient:
         self.headers = auth_headers(datasource)
         self.page_size = int(source_config(datasource).get("page_size") or 500)
         self.transport = transport
+        if self.base_url == INTERNAL_MOCK_BASE and transport is None:
+            from dgov.devtools.mock_metadata_api import app as mock_metadata_app
+
+            self.transport = httpx.ASGITransport(app=mock_metadata_app)
+        self._request_base = (
+            "http://mock-metadata.local" if self.base_url == INTERNAL_MOCK_BASE else self.base_url
+        )
+
+    def _url(self, path: str) -> str:
+        return f"{self._request_base}{path}"
 
     @property
     def asset_urls(self) -> dict[str, str]:
@@ -88,14 +101,17 @@ class MetadataApiClient:
             timeout=settings.metadata_api_timeout,
             transport=self.transport,
         ) as client:
-            response = await client.get(f"{self.base_url}/health", headers=self.headers)
+            response = await client.get(self._url("/health"), headers=self.headers)
             response.raise_for_status()
             return response.json()
 
-    async def fetch(self, asset: str) -> list[dict[str, Any]]:
+    async def fetch(
+        self, asset: str, *, extra_params: dict[str, Any] | None = None
+    ) -> list[dict[str, Any]]:
         if asset not in self.endpoints:
             raise BadRequestError(f"不支持的采集资产: {asset}")
-        url = f"{self.base_url}{self.endpoints[asset]}"
+        url = self._url(self.endpoints[asset])
+        extra_params = extra_params or {}
         items: list[dict[str, Any]] = []
         offset = 0
         async with httpx.AsyncClient(
@@ -103,11 +119,8 @@ class MetadataApiClient:
             transport=self.transport,
         ) as client:
             while True:
-                response = await client.get(
-                    url,
-                    params={"limit": self.page_size, "offset": offset},
-                    headers=self.headers,
-                )
+                params = {"limit": self.page_size, "offset": offset, **extra_params}
+                response = await client.get(url, params=params, headers=self.headers)
                 response.raise_for_status()
                 payload = response.json()
                 if isinstance(payload, list):
@@ -128,5 +141,14 @@ class MetadataApiClient:
         )
         return items
 
-    async def fetch_assets(self, assets: list[str]) -> dict[str, list[dict[str, Any]]]:
-        return {asset: await self.fetch(asset) for asset in assets}
+    async def fetch_assets(
+        self,
+        assets: list[str],
+        *,
+        params_by_asset: dict[str, dict[str, Any]] | None = None,
+    ) -> dict[str, list[dict[str, Any]]]:
+        params_by_asset = params_by_asset or {}
+        return {
+            asset: await self.fetch(asset, extra_params=params_by_asset.get(asset))
+            for asset in assets
+        }

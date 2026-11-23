@@ -15,8 +15,12 @@ async def list_standards(
     page: Annotated[int, Query(ge=1)] = 1,
     page_size: Annotated[int, Query(ge=1, le=200)] = 20,
     keyword: str | None = None,
+    category: str | None = None,
+    active: bool | None = None,
 ) -> Page[StandardRead]:
-    items, total = await service.list_standards(session, page, page_size, keyword)
+    items, total = await service.list_standards(
+        session, page, page_size, keyword, category=category, active=active
+    )
     return Page(items=items, total=total, page=page, page_size=page_size)
 
 

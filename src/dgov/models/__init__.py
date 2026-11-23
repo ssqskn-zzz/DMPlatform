@@ -9,6 +9,13 @@ from dgov.models.base import Base
 from dgov.models.catalog import Dataset, DatasetColumn, DataStandard
 from dgov.models.datasource import DataSource
 from dgov.models.lineage import LineageEdge
+from dgov.models.lineage_insight import (
+    AgentEndpoint,
+    LineageAlert,
+    LineageFlow,
+    LineageFlowRun,
+    LineageIssue,
+)
 from dgov.models.metadata import (
     CollectionJob,
     ColumnLineage,
@@ -28,8 +35,13 @@ from dgov.models.quality import QualityResult, QualityRule
 from dgov.models.semantic import SemanticAsset
 
 __all__ = [
+    "AgentEndpoint",
     "AuthSession",
     "Base",
+    "LineageAlert",
+    "LineageFlow",
+    "LineageFlowRun",
+    "LineageIssue",
     "CollectionJob",
     "ColumnLineage",
     "DataStandard",
