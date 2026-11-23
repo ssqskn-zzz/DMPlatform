@@ -15,6 +15,8 @@ from dgov.core.es import close_es, ensure_semantic_index
 from dgov.core.exceptions import AppError
 from dgov.core.graph import close_graph, ensure_graph_schema
 from dgov.core.logging import setup_logging
+from dgov.devtools.mock_agent_api import app as mock_agent_app
+from dgov.devtools.mock_metadata_api import app as mock_metadata_app
 from dgov.services.auth import seed_default_users
 from dgov.services.governance import seed_demo_data
 from dgov.services.metadata_seed import bootstrap_collection, seed_metadata_source
@@ -54,8 +56,9 @@ async def lifespan(app: FastAPI):
     await _best_effort("mysql", init_db)
     await _best_effort("governance seed", _seed_governance)
     await _best_effort("metadata bootstrap", _bootstrap_metadata)
-    await _best_effort("elasticsearch", ensure_semantic_index)
-    await _best_effort("neo4j", ensure_graph_schema)
+    if settings.init_optional_infra:
+        await _best_effort("elasticsearch", ensure_semantic_index)
+        await _best_effort("neo4j", ensure_graph_schema)
     start_scheduler()
     try:
         yield
@@ -102,6 +105,11 @@ async def root():
 
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+# Development-only in-process agent API, so the pipeline works without any
+# external service.  Registered endpoints point at internal://mock-agent.
+app.mount("/mock/agent", mock_agent_app, name="mock-agent")
+app.mount("/mock/metadata", mock_metadata_app, name="mock-metadata")
 
 app.include_router(health.router)
 app.include_router(auth.router, prefix=settings.api_v1_prefix)

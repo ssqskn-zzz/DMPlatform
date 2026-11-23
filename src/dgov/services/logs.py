@@ -20,6 +20,9 @@ LOG_CATEGORIES = {
     "lineage_change": "数据血缘变更",
     "quality_check": "数据质量巡检",
     "access_control": "权限配置",
+    "lineage_insight": "血缘智能巡检",
+    "agent_call": "智能体调用",
+    "lineage_spec": "血缘开发规范",
 }
 
 

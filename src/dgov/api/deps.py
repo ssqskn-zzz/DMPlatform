@@ -60,3 +60,7 @@ ConfigManagerDep = Annotated[PlatformUser, Depends(require_permission("config:wr
 GovernanceWriterDep = Annotated[PlatformUser, Depends(require_permission("governance:write"))]
 CollectionRunnerDep = Annotated[PlatformUser, Depends(require_permission("collection:run"))]
 LogReaderDep = Annotated[PlatformUser, Depends(require_permission("logs:read"))]
+AgentManagerDep = Annotated[PlatformUser, Depends(require_permission("agent:manage"))]
+FlowWriterDep = Annotated[PlatformUser, Depends(require_permission("lineage.flow:write"))]
+FlowRunnerDep = Annotated[PlatformUser, Depends(require_permission("lineage.flow:run"))]
+IssueReviewerDep = Annotated[PlatformUser, Depends(require_permission("lineage.issue:review"))]

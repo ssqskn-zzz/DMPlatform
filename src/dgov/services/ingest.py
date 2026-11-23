@@ -8,6 +8,7 @@ import httpx
 from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from dgov.core.config import settings
 from dgov.core.exceptions import BadRequestError
 from dgov.models.base import utcnow
 from dgov.models.datasource import DataSource
@@ -138,7 +139,35 @@ def normalize_lineage(row: dict[str, Any]) -> dict[str, Any] | None:
         "source_schema": _text(row, "source_schema"),
         "target_schema": _text(row, "target_schema"),
         "lineage_type": _integer(row.get("lingeage_type")) or 0,
+        "op": str(row.get("op") or "upsert").lower(),
     }
+
+
+def lineage_raw_edges(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Keep the API's original (possibly duplicated) rows for insight checks.
+
+    ``_upsert_lineage`` de-duplicates before writing ``meta_lineage``, so the
+    graph itself cannot reveal duplicate-edge problems.  The raw feed is kept
+    (bounded) in ``DataSource.config`` and consumed by the rule engine.
+    """
+    result: list[dict[str, Any]] = []
+    for row in rows:
+        payload = normalize_lineage(row)
+        if payload is None:
+            continue
+        result.append(
+            {
+                "source_table_id": payload["source_table_id"],
+                "target_table_id": payload["target_table_id"],
+                "source_table": payload["source_table_name"] or "",
+                "target_table": payload["target_table_name"] or "",
+                "source_schema": payload["source_schema"] or "",
+                "target_schema": payload["target_schema"] or "",
+                "type": str(payload["lineage_type"]),
+                "op": payload["op"],
+            }
+        )
+    return result
 
 
 def _table_values(payload: dict[str, Any]) -> dict[str, Any]:
@@ -358,6 +387,7 @@ async def _upsert_lineage(
     *,
     initial: bool,
     actor: str | None,
+    incremental: bool = False,
 ) -> dict[str, int]:
     existing = {
         (edge.source_table_id, edge.target_table_id, edge.lineage_type): edge
@@ -375,6 +405,7 @@ async def _upsert_lineage(
         if payload is None:
             stats["skipped"] += 1
             continue
+        op = payload.pop("op", "upsert")
         key = (
             payload["source_table_id"],
             payload["target_table_id"],
@@ -385,6 +416,24 @@ async def _upsert_lineage(
             continue
         seen.add(key)
         edge = existing.get(key)
+        if op == "delete":
+            if edge is not None and edge.status == "active":
+                edge.status = "deprecated"
+                edge.last_seen_at = now
+                stats["removed"] += 1
+                if not initial:
+                    await write_log(
+                        session,
+                        category="lineage_change",
+                        action="lineage.removed",
+                        message=f"增量删除血缘 {key[0]} → {key[1]}",
+                        actor=actor,
+                        level="warning",
+                        resource_type="meta_lineage",
+                        resource_id=f"{key[0]}->{key[1]}",
+                        commit=False,
+                    )
+            continue
         if edge is None:
             edge = MetadataLineage(
                 datasource_id=datasource.id,
@@ -419,25 +468,29 @@ async def _upsert_lineage(
         edge.last_seen_at = now
         edge.status = "active"
 
-    for key, edge in existing.items():
-        if edge.status == "active" and key not in seen:
-            edge.status = "deprecated"
-            stats["removed"] += 1
-            if not initial:
-                await write_log(
-                    session,
-                    category="lineage_change",
-                    action="lineage.removed",
-                    message=(
-                        f"血缘失效 {edge.source_table_name or key[0]} → "
-                        f"{edge.target_table_name or key[1]}"
-                    ),
-                    actor=actor,
-                    level="warning",
-                    resource_type="meta_lineage",
-                    resource_id=f"{key[0]}->{key[1]}",
-                    commit=False,
-                )
+    # Only a FULL feed may deprecate edges that did not appear.  In incremental
+    # mode the API explicitly marks deletions with op=delete; treating an absent
+    # edge as deleted would wipe every unchanged edge in the graph.
+    if not incremental:
+        for key, edge in existing.items():
+            if edge.status == "active" and key not in seen:
+                edge.status = "deprecated"
+                stats["removed"] += 1
+                if not initial:
+                    await write_log(
+                        session,
+                        category="lineage_change",
+                        action="lineage.removed",
+                        message=(
+                            f"血缘失效 {edge.source_table_name or key[0]} → "
+                            f"{edge.target_table_name or key[1]}"
+                        ),
+                        actor=actor,
+                        level="warning",
+                        resource_type="meta_lineage",
+                        resource_id=f"{key[0]}->{key[1]}",
+                        commit=False,
+                    )
     await session.flush()
     return stats
 
@@ -504,6 +557,7 @@ async def ingest_payload(
     payload: dict[str, list[dict[str, Any]]],
     *,
     actor: str | None = None,
+    incremental: bool = False,
 ) -> dict[str, Any]:
     existing_tables = (
         await session.execute(
@@ -549,8 +603,25 @@ async def ingest_payload(
         )
     if "table_lineage" in payload:
         stats["lineage"] = await _upsert_lineage(
-            session, datasource, payload["table_lineage"], initial=initial, actor=actor
+            session,
+            datasource,
+            payload["table_lineage"],
+            initial=initial,
+            actor=actor,
+            incremental=incremental,
         )
+        raw_edges = lineage_raw_edges(payload["table_lineage"])
+        unique_edges = {
+            (edge["source_table_id"], edge["target_table_id"], edge["type"])
+            for edge in raw_edges
+        }
+        stats["lineage_raw_rows"] = len(raw_edges)
+        stats["lineage_duplicate_rows"] = len(raw_edges) - len(unique_edges)
+        timestamps = [
+            str(row.get("updatetime") or row.get("createtime") or "")
+            for row in payload["table_lineage"]
+        ]
+        stats["lineage_cursor"] = max((value for value in timestamps if value), default=None)
     stats["column_lineage_new"] = await rebuild_column_lineage(session, datasource.id)
     await modeling.rebuild_warehouse_models(session)
     await modeling.rebuild_ontology(session)
@@ -576,6 +647,9 @@ async def run_collection(
     actor: str | None = None,
     transport: httpx.AsyncBaseTransport | None = None,
     run_quality: bool = True,
+    since: str | None = None,
+    incremental: bool | None = None,
+    run_insight: bool = True,
 ) -> tuple[IngestRun, dict[str, Any]]:
     invalid = sorted(set(assets) - set(SOURCE_ASSETS))
     if invalid:
@@ -584,9 +658,11 @@ async def run_collection(
     if datasource.type != "api":
         raise BadRequestError("当前仅支持 API 类型数据源的元数据采集")
 
+    source_id = datasource.id
+    source_name = datasource.name
     run = IngestRun(
         job_id=job_id,
-        datasource_id=datasource.id,
+        datasource_id=source_id,
         trigger_type=trigger_type,
         status="running",
         assets=selected,
@@ -595,11 +671,65 @@ async def run_collection(
     session.add(run)
     await session.commit()
     await session.refresh(run)
+    run_id = run.id
 
     try:
         client = MetadataApiClient(datasource, transport=transport)
-        payload = await client.fetch_assets(selected)
-        stats = await ingest_payload(session, datasource, payload, actor=actor)
+        # A scheduled lineage-only job reuses the persisted cursor, which is
+        # how "periodically fetch incremental lineage from the API" is realised.
+        if (
+            since is None
+            and incremental is None
+            and trigger_type == "schedule"
+            and selected == ["table_lineage"]
+        ):
+            since = dict(datasource.config or {}).get("lineage_cursor") or None
+        is_incremental = bool(since) if incremental is None else incremental
+        params_by_asset: dict[str, dict[str, Any]] = {}
+        if is_incremental and since:
+            params_by_asset["table_lineage"] = {"since": since}
+        payload = await client.fetch_assets(selected, params_by_asset=params_by_asset)
+        stats = await ingest_payload(
+            session, datasource, payload, actor=actor, incremental=is_incremental
+        )
+        cursor_to = stats.get("lineage_cursor")
+        raw_edges = lineage_raw_edges(payload.get("table_lineage") or [])
+        changed_ids = {
+            value
+            for edge in raw_edges
+            for value in (edge["source_table_id"], edge["target_table_id"])
+        }
+        # Persist the cursor, raw feed and changed ids on the datasource config
+        # (no new table needed; the JSON column already exists).
+        config = dict(datasource.config or {})
+        if cursor_to:
+            config["lineage_cursor"] = cursor_to
+        # Keep the full raw feed for duplicate-edge checks.  An incremental
+        # batch only carries changed edges, so merge it into the previous feed
+        # instead of replacing it (otherwise duplicate detection silently
+        # degrades to the size of the latest delta).
+        if is_incremental:
+            grouped: dict[tuple[str, str, str], list[dict]] = {}
+            for edge in config.get("lineage_last_raw_edges") or []:
+                key = (edge["source_table_id"], edge["target_table_id"], edge["type"])
+                grouped.setdefault(key, []).append(edge)
+            touched: set[tuple[str, str, str]] = set()
+            for edge in raw_edges:
+                key = (edge["source_table_id"], edge["target_table_id"], edge["type"])
+                if key not in touched:
+                    # A batch re-states all rows of an edge it touches, so
+                    # replace the previous rows for that edge (this also
+                    # handles deletes without losing other duplicate rows).
+                    grouped[key] = []
+                    touched.add(key)
+                if edge.get("op") != "delete":
+                    grouped[key].append(edge)
+            raw_feed = [edge for rows in grouped.values() for edge in rows]
+        else:
+            raw_feed = raw_edges
+        config["lineage_last_raw_edges"] = raw_feed[-settings.lineage_max_edges :]
+        config["lineage_last_changed"] = sorted(changed_ids)
+        datasource.config = config
         quality_summary = None
         if run_quality and "table_info" in selected:
             quality_summary = await run_quality_checks(session, actor=actor, trigger="collection")
@@ -609,6 +739,10 @@ async def run_collection(
             "assets": selected,
             "stats": stats,
             "quality": quality_summary,
+            "incremental": is_incremental,
+            "cursor_from": since,
+            "cursor_to": cursor_to,
+            "changed_ids": sorted(changed_ids),
         }
         run.status = "success"
         run.finished_at = utcnow()
@@ -634,7 +768,7 @@ async def run_collection(
             ),
             actor=actor,
             resource_type="data_source",
-            resource_id=datasource.id,
+            resource_id=source_id,
             detail=summary,
             commit=False,
         )
@@ -642,7 +776,7 @@ async def run_collection(
             session,
             category="datasource_schedule",
             action=f"collection.{trigger_type}",
-            message=f"数据源「{datasource.name}」采集成功（{trigger_type}）",
+            message=f"数据源「{source_name}」采集成功（{trigger_type}）",
             actor=actor,
             resource_type="ingest_run",
             resource_id=run.id,
@@ -651,11 +785,37 @@ async def run_collection(
         )
         await session.commit()
         await session.refresh(run)
+        if run_insight:
+            try:
+                from dgov.services.lineage_insight import trigger_after_collection
+
+                summary["insight_run_ids"] = await trigger_after_collection(
+                    session,
+                    datasource_id=datasource.id,
+                    ingest_run_id=run.id,
+                    actor=actor,
+                    changed_ids=changed_ids,
+                    cursor_to=cursor_to,
+                )
+            except Exception as exc:  # insight must never break collection
+                logger.warning("post-collection insight trigger skipped: %s", exc)
+                summary["insight_run_ids"] = []
         return run, summary
     except Exception as exc:  # surface failure through run history + operation log
-        logger.exception("metadata collection failed for source %s", datasource.id)
+        logger.exception("metadata collection failed for source %s", source_id)
         await session.rollback()
-        run = await session.get(IngestRun, run.id)
+        run = await session.get(IngestRun, run_id)
+        if run is None:
+            run = IngestRun(
+                id=run_id,
+                job_id=job_id,
+                datasource_id=source_id,
+                trigger_type=trigger_type,
+                status="failed",
+                assets=selected,
+                started_at=utcnow(),
+            )
+            session.add(run)
         run.status = "failed"
         run.finished_at = utcnow()
         run.error_message = str(exc)[:2000]
@@ -663,16 +823,21 @@ async def run_collection(
             session,
             category="datasource_schedule",
             action="collection.failed",
-            message=f"数据源「{datasource.name}」采集失败：{str(exc)[:180]}",
+            message=f"数据源「{source_name}」采集失败：{str(exc)[:180]}",
             actor=actor,
             level="error",
             resource_type="ingest_run",
-            resource_id=run.id,
+            resource_id=run_id,
             detail={"assets": selected},
             commit=False,
         )
         await session.commit()
-        return run, {"run_id": run.id, "status": "failed", "error": str(exc), "assets": selected}
+        return run, {
+            "run_id": run_id,
+            "status": "failed",
+            "error": str(exc),
+            "assets": selected,
+        }
 
 
 def next_run_at(unit: str, value: int, base=None):

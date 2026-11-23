@@ -40,8 +40,22 @@ class Settings(BaseSettings):
     scheduler_enabled: bool = True
     scheduler_tick_seconds: int = 15
     seed_metadata_source: bool = True
-    mock_metadata_api_url: str = "http://127.0.0.1:8100"
+    # ``internal://mock-metadata`` serves the in-process fixture API via
+    # ASGITransport, so a fresh SQLite instance has real lineage data without
+    # any external service.  Point this at an http(s) URL for production.
+    mock_metadata_api_url: str = "internal://mock-metadata"
     metadata_api_timeout: float = 20.0
+
+    # Lineage insight pipeline + agent endpoints
+    secret_key: str = "dgov-dev-secret-change-me"
+    lineage_insight_enabled: bool = True
+    lineage_insight_auto_trigger: bool = True
+    lineage_max_edges: int = 2000
+    agent_timeout_ms: int = 20_000
+    agent_max_retries: int = 2
+    agent_retry_backoff_ms: int = 300
+    agent_default_base_url: str = "internal://mock-agent"
+    init_optional_infra: bool = True
 
     # Log retention: database rows are pruned, application logs rotate by size.
     log_retention_days: int = 30
