@@ -35,7 +35,6 @@ router = APIRouter(tags=["lineage-insight"])
 
 class SpecPublish(BaseModel):
     name: str = Field(default="", max_length=128)
-    clauses: list[str] = Field(default_factory=list)
     full_text: str = ""
 
 
@@ -58,7 +57,6 @@ async def publish_spec(
     row = await lineage_spec.publish_new_version(
         session,
         name=payload.name,
-        clauses=payload.clauses or list(lineage_spec.DEFAULT_CLAUSES),
         full_text=payload.full_text or lineage_spec.DEFAULT_RULE_TEXT,
         actor=manager.username,
     )

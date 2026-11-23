@@ -182,10 +182,10 @@ def test_encrypt_secret_random_salt() -> None:
 def test_parse_request_contract_requires_spec_and_edges() -> None:
     payload = ParseRequest(
         request_id="r1",
-        spec=SpecPayload(version="v1", clauses=["任务名与表名一致"]),
+        spec=SpecPayload(version="v1", full_text="任务名与表名一致"),
         edges=[{"source_table_id": "A", "target_table_id": "B"}],
     )
-    assert payload.spec.clauses[0] == "任务名与表名一致"
+    assert "任务名与表名一致" in payload.spec.full_text
     assert payload.edges[0].op == "upsert"
 
 
@@ -225,7 +225,7 @@ async def test_mock_agent_parse_maps_tables_to_tasks(
 ) -> None:
     request = ParseRequest(
         request_id="r-parse",
-        spec=SpecPayload(version="v1", clauses=["任务名与表名一致", "血缘为任务间依赖"]),
+        spec=SpecPayload(version="v1", full_text="任务名与表名一致；血缘为任务间依赖"),
         edges=[
             {
                 "source_table_id": "1", "target_table_id": "2",
@@ -243,7 +243,7 @@ async def test_mock_agent_parse_maps_tables_to_tasks(
     parsed = ParseResponse.model_validate(response.json())
     assert len(parsed.result.task_graph.nodes) == 3
     assert len(parsed.result.task_graph.edges) == 2
-    assert "任务名与表名一致" in "".join(parsed.result.observations)
+    assert "收到规范全文" in "".join(parsed.result.observations)
     assert any("v1" in item for item in parsed.result.observations)
 
 
@@ -252,7 +252,7 @@ async def test_mock_agent_parse_flags_temp_and_reverse_layer(
 ) -> None:
     request = ParseRequest(
         request_id="r-parse2",
-        spec=SpecPayload(version="v1", clauses=[]),
+        spec=SpecPayload(version="v1", full_text=""),
         edges=[
             {
                 "source_table_id": "1", "target_table_id": "2",
@@ -321,9 +321,8 @@ async def test_default_spec_is_auto_created(db_factory) -> None:
         spec = await lineage_spec.get_active_spec(session)
         assert spec["version"] == "v1"
         assert spec["status"] == "active"
-        assert len(spec["clauses"]) == 5
-        assert any("任务名与表名一致" in clause for clause in spec["clauses"])
-        assert any("任务间依赖" in clause for clause in spec["clauses"])
+        assert "任务名与表名" in spec["full_text"]
+        assert "任务间依赖" in spec["full_text"]
         assert "血缘语义" in spec["full_text"]
         await session.commit()
     async with db_factory() as session:
@@ -345,7 +344,6 @@ async def test_publish_new_spec_version_archives_previous(db_factory) -> None:
         v2 = await lineage_spec.publish_new_version(
             session,
             name="血缘规范 v2",
-            clauses=["新增条款：禁止跨层直连"],
             full_text="# v2",
             actor="pytest",
         )
@@ -354,7 +352,7 @@ async def test_publish_new_spec_version_archives_previous(db_factory) -> None:
     async with db_factory() as session:
         active = await lineage_spec.get_active_spec(session)
         assert active["version"] == "v2"
-        assert active["clauses"] == ["新增条款：禁止跨层直连"]
+        assert active["full_text"] == "# v2"
         rows = list(
             (
                 await session.execute(
@@ -503,7 +501,7 @@ async def test_agent_client_test_contract_with_internal_mock() -> None:
     ep = _endpoint(base_url=INTERNAL_MOCK)
     client = AgentApiClient(ep)
     result = await client.test_contract(
-        {"version": "v1", "clauses": ["任务名与表名一致"]}, [_edge()]
+        {"version": "v1", "full_text": "任务名与表名一致"}, [_edge()]
     )
     assert result["health"]["status"] == "ok"
     assert result["parse_nodes"] == 2
@@ -531,7 +529,7 @@ async def test_run_flow_full_success_with_agent(db_factory) -> None:
         parse_detail = run.stages_result[1]["detail"]
         diag_detail = run.stages_result[2]["detail"]
         assert parse_detail["spec_version"] == "v1"
-        assert parse_detail["spec_clauses"] == 5
+        assert parse_detail["spec_chars"] > 0
         assert parse_detail["edge_count"] == diag_detail["edge_count"] == 0
         assert parse_detail["agent_code"] == AGENT_CODE
 
@@ -554,14 +552,14 @@ async def test_run_flow_uses_new_spec_version(db_factory) -> None:
     async with db_factory() as session:
         await lineage_spec.get_active_spec(session)
         await lineage_spec.publish_new_version(
-            session, name="v2", clauses=["新条款"], full_text="# v2", actor="pytest"
+            session, name="v2", full_text="# v2", actor="pytest"
         )
         await session.commit()
     async with db_factory() as session:
         flow = await insight.ensure_default_flow(session)
         run, _ = await insight.run_flow(session, flow, actor="pytest")
         assert run.spec_version == "v2"
-        assert run.stages_result[1]["detail"]["spec_clauses"] == 1
+        assert run.stages_result[1]["detail"]["spec_chars"] == len("# v2")
 
 
 async def test_run_flow_degrades_when_agent_unavailable(db_factory) -> None:
@@ -927,6 +925,41 @@ async def test_scheduled_lineage_job_reuses_cursor(db_factory, monkeypatch) -> N
 # 9. API surface
 # ==========================================================================
 
+async def test_standard_registry_auto_versions_full_text(client) -> None:
+    categories = (await client.get(f"{API}/standards/categories")).json()
+    lineage = next(item for item in categories if item["code"] == "lineage_dev_spec")
+    assert lineage["has_active"] is True
+
+    created = await client.post(
+        f"{API}/standards",
+        json={
+            "name": "数据质量规范",
+            "category": "data_quality_spec",
+            "rule": "# 质量规范 v1",
+        },
+    )
+    assert created.status_code == 201, created.text
+    first = created.json()
+    assert first["version"] == "v1" and first["status"] == "active"
+
+    updated = await client.patch(
+        f"{API}/standards/{first['id']}", json={"rule": "# 质量规范 v2"}
+    )
+    assert updated.status_code == 200, updated.text
+    second = updated.json()
+    assert second["version"] == "v2" and second["id"] != first["id"]
+    assert second["rule"] == "# 质量规范 v2"
+
+    history = (
+        await client.get(f"{API}/standards?category=data_quality_spec&page_size=50")
+    ).json()["items"]
+    assert {item["version"] for item in history} == {"v1", "v2"}
+    assert {item["status"] for item in history} == {"active", "archived"}
+    # Only the lineage category is consumed by the lineage insight pipeline.
+    lineage_active = (await client.get(f"{API}/lineage-specs/active")).json()
+    assert lineage_active["category"] == "lineage_dev_spec"
+
+
 async def test_api_specs_and_publish(client: httpx.AsyncClient) -> None:
     active = await client.get(f"{API}/lineage-specs/active")
     assert active.status_code == 200, active.text
@@ -934,7 +967,7 @@ async def test_api_specs_and_publish(client: httpx.AsyncClient) -> None:
 
     published = await client.post(
         f"{API}/lineage-specs/publish",
-        json={"name": "血缘规范 v2", "clauses": ["条款 A", "条款 B"], "full_text": "# v2"},
+        json={"name": "血缘规范 v2", "full_text": "# v2"},
     )
     assert published.status_code == 201, published.text
     assert published.json()["version"] == "v2"
@@ -1117,7 +1150,7 @@ async def test_api_permissions_are_enforced(client: httpx.AsyncClient) -> None:
     assert read_ok.status_code == 200
     write_denied = await client.post(
         f"{API}/lineage-specs/publish",
-        json={"name": "x", "clauses": ["x"]},
+        json={"name": "x", "full_text": "x"},
         headers=viewer_headers,
     )
     assert write_denied.status_code == 403

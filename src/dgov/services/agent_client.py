@@ -119,7 +119,6 @@ class AgentApiClient:
         health = await self.health()
         spec_payload = SpecPayload(
             version=str(spec.get("version") or "v1"),
-            clauses=list(spec.get("clauses") or []),
             full_text=str(spec.get("full_text") or ""),
         )
         sample_edges = [

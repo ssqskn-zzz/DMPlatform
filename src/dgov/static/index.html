@@ -1106,59 +1106,94 @@ async function saveUserPerms(event) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Lineage development specs                                          */
+/* Standards (all categories, full text only, auto versioning)        */
 /* ------------------------------------------------------------------ */
-function renderLineageSpecs() {
-  setHeading('标准规范', '血缘关系开发规范维护：任务名与表名一致、血缘为任务间依赖', '应用功能', '已上线');
+function renderStandards() {
+  if (!state.standards) state.standards = { categories: [], items: [], category: 'lineage_dev_spec' };
+  setHeading('标准规范', '统一维护各类规范的全文，文本变更自动生成新版本并归档旧版本', '应用功能', '已上线');
   $('pageContent').innerHTML = `
-    <div id="specStats" class="grid-stats"></div>
+    <div id="stdStats" class="grid-stats"></div>
     <section class="panel card">
-      <div class="card-head"><div><h2>当前生效规范</h2><p>调用智能体解析 / 识别时，规范与表级血缘数据一并传入</p></div></div>
-      <div id="specActive"><div class="loading">正在加载...</div></div>
+      <div class="card-head"><div><h2>规范分类</h2><p>血缘开发规范是其中一类；后续新增规范只需选择分类并维护全文</p></div></div>
+      <div id="stdCategories" class="chips"></div>
     </section>
     <section class="panel card">
-      <div class="card-head"><div><h2>历史版本</h2><p>发布新版本不会改变历史巡检运行所依据的规范</p></div></div>
-      <div id="specHistory" class="table-wrap"></div>
+      <div class="card-head"><div><h2 id="stdEditorTitle">规范全文</h2><p>只维护 Markdown 全文，保存时按全文生成下一个版本并传给智能体</p></div></div>
+      <div id="stdEditor"><div class="loading">正在加载...</div></div>
     </section>
-    ${can('lineage.flow:write') ? `<section class="panel card">
-      <div class="card-head"><div><h2>发布新版本</h2><p>条款每行一条；全文留空则沿用默认规范模板</p></div></div>
-      <form id="specPublishForm" class="form-grid">
-        <div class="field"><label for="specName">规范名称</label><input id="specName" class="input" placeholder="血缘关系开发规范 v2"></div>
-        <div class="field"><label for="specClauses">结构化条款（每行一条，随 API 传给智能体）</label><textarea id="specClauses" class="input" rows="6"></textarea></div>
-        <div class="field"><label for="specFullText">规范全文 Markdown（可选）</label><textarea id="specFullText" class="input" rows="4"></textarea></div>
-        <div class="form-actions"><button class="btn primary" type="submit">发布新版本</button></div>
-      </form>
-    </section>` : ''}`;
-  if ($('specPublishForm')) {
-    $('specPublishForm').addEventListener('submit', async event => {
-      event.preventDefault();
-      const clauses = $('specClauses').value.split('\n').map(line => line.trim()).filter(Boolean);
-      if (!clauses.length) { toast('请至少填写一条规范条款', true); return; }
-      try {
-        await request('/lineage-specs/publish', { method: 'POST', body: JSON.stringify({
-          name: $('specName').value.trim(), clauses, full_text: $('specFullText').value
-        }) });
-        toast('新版本已发布，旧版本自动归档'); await loadSpecs();
-      } catch (error) { toast(error.message, true); }
-    });
-  }
-  loadSpecs();
+    <section class="panel card">
+      <div class="card-head"><div><h2>版本历史</h2><p>每次全文变更自动归档旧版本，历史巡检仍按当时版本记录</p></div></div>
+      <div id="stdHistory" class="table-wrap"></div>
+    </section>`;
+  loadStandards();
 }
-async function loadSpecs() {
+async function loadStandards() {
   try {
-    const [active, history] = await Promise.all([
-      request('/lineage-specs/active'), request('/lineage-specs')
+    const [categories, page] = await Promise.all([
+      request('/standards/categories'),
+      request('/standards?page=1&page_size=200')
     ]);
-    $('specStats').innerHTML = [
-      stat('生效版本', esc(active.version), `共 ${history.length} 个历史版本`),
-      stat('结构化条款', active.clauses.length, '随智能体请求下发'),
-      stat('规范状态', active.status === 'active' ? '生效中' : '草稿', active.category)
+    state.standards.categories = categories;
+    state.standards.items = page.items || [];
+    const active = state.standards.categories.filter(item => item.has_active).length;
+    $('stdStats').innerHTML = [
+      stat('规范分类', fmt(state.standards.categories.length), '覆盖血缘、质量、安全、建模等'),
+      stat('生效规范', fmt(active), '每个分类同时只有一条生效版本'),
+      stat('版本总数', fmt(state.standards.items.length), '全文变更自动递增版本')
     ].join('');
-    $('specActive').innerHTML = `<div class="form-row"><b>${esc(active.name)}</b> ${badge(active.version, 'good')} ${badge(active.status === 'active' ? '生效中' : '归档', active.status === 'active' ? 'good' : 'muted')}</div>
-      <div class="chips">${active.clauses.map((clause, index) => `<span class="chip">${index + 1}. ${esc(clause)}</span>`).join('')}</div>
-      <details style="margin-top:12px"><summary class="muted" style="cursor:pointer">查看规范全文</summary><div class="detail-box">${esc(active.full_text)}</div></details>`;
-    $('specHistory').innerHTML = history.length ? `<table><thead><tr><th>版本</th><th>名称</th><th>状态</th><th>条款数</th></tr></thead><tbody>${history.map(item => `<tr><td>${esc(item.version)}</td><td>${esc(item.name)}</td><td>${badge(item.status, item.status === 'active' ? 'good' : 'muted')}</td><td>${item.clauses.length}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">暂无规范版本</div>';
-  } catch (error) { $('specActive').innerHTML = `<div class="empty">${esc(error.message)}</div>`; }
+    renderStandardCategories();
+    selectStandardCategory(state.standards.category);
+  } catch (error) {
+    $('stdEditor').innerHTML = `<div class="empty">${esc(error.message)}</div>`;
+  }
+}
+function renderStandardCategories() {
+  $('stdCategories').innerHTML = state.standards.categories.map(item =>
+    `<button type="button" class="chip ${item.code === state.standards.category ? 'active' : ''}" data-std-cat="${esc(item.code)}">${esc(item.label)} · ${item.versions}</button>`
+  ).join('');
+  document.querySelectorAll('[data-std-cat]').forEach(button => {
+    button.onclick = () => selectStandardCategory(button.dataset.stdCat);
+  });
+}
+function selectStandardCategory(code) {
+  state.standards.category = code;
+  const category = state.standards.categories.find(item => item.code === code) || { label: code };
+  const versions = state.standards.items.filter(item => (item.category || 'general') === code);
+  const active = versions.find(item => item.status === 'active') || null;
+  state.standards.active = active;
+  document.querySelectorAll('[data-std-cat]').forEach(button => {
+    button.classList.toggle('active', button.dataset.stdCat === code);
+  });
+  $('stdEditorTitle').textContent = `${category.label} · 全文`;
+  const writable = can('lineage.flow:write');
+  $('stdEditor').innerHTML = `
+    <div class="form-grid">
+      <div class="field"><label for="stdName">规范名称</label>
+        <input id="stdName" class="input" value="${esc(active ? active.name : category.label)}" ${writable ? '' : 'disabled'}></div>
+      <div class="field"><label for="stdVersion">当前版本</label>
+        <input id="stdVersion" class="input" value="${esc(active ? active.version : '尚未创建')}" disabled></div>
+      <div class="field" style="grid-column:1/-1"><label for="stdText">规范全文（Markdown，直接下发给智能体）</label>
+        <textarea id="stdText" class="input" rows="14" ${writable ? '' : 'disabled'} placeholder="填写该分类的规范全文...">${esc(active ? (active.rule || '') : '')}</textarea></div>
+      ${writable ? '<div class="form-actions"><button id="stdSave" class="btn primary" type="button">保存（自动生成新版本）</button></div>' : '<div class="muted">当前账号无规范维护权限</div>'}
+    </div>`;
+  if (writable) $('stdSave').onclick = saveStandard;
+  $('stdHistory').innerHTML = versions.length ? `<table><thead><tr><th>版本</th><th>名称</th><th>状态</th><th>全文长度</th><th>更新时间</th></tr></thead><tbody>${versions.map(item => `<tr><td>${esc(item.version)}</td><td>${esc(item.name)}</td><td>${badge(item.status === 'active' ? '生效中' : '已归档', item.status === 'active' ? 'good' : 'muted')}</td><td>${fmt((item.rule || '').length)} 字</td><td>${formatDate(item.updated_at)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">该分类暂无规范</div>';
+}
+async function saveStandard() {
+  const active = state.standards.active;
+  const name = $('stdName').value.trim();
+  const text = $('stdText').value;
+  if (!name) { toast('请填写规范名称', true); return; }
+  if (!text.trim()) { toast('请填写规范全文', true); return; }
+  try {
+    if (active) {
+      await request(`/standards/${active.id}`, { method: 'PATCH', body: JSON.stringify({ name, rule: text }) });
+    } else {
+      await request('/standards', { method: 'POST', body: JSON.stringify({ name, category: state.standards.category, rule: text }) });
+    }
+    toast('已保存，版本自动递增');
+    await loadStandards();
+  } catch (error) { toast(error.message, true); }
 }
 
 /* ------------------------------------------------------------------ */
@@ -1217,7 +1252,7 @@ async function loadInsight() {
       stat('巡检运行', fmt(data.runs), `生效流程 ${fmt(data.active_flows)} 个`),
       stat('发现问题', fmt(data.issues), `待复核 ${fmt(data.open_issues)} 个`),
       stat('告警', fmt(data.alerts), '按去重键抑制重复告警'),
-      stat('生效规范', esc(data.spec_version), `${fmt(data.spec_clauses)} 条条款`)
+      stat('生效规范', esc(data.spec_version), `全文 ${fmt(data.spec_chars)} 字`)
     ].join('');
     const [flows, runs] = await Promise.all([
       request('/lineage-flows'), request('/lineage-runs?limit=20')
@@ -1361,7 +1396,7 @@ Object.assign(PAGE_RENDERERS, {
   'asset-inventory': renderAssets,
   'metadata-lineage': renderMetadata,
   'lineage-insight': renderLineageInsight,
-  'standards': renderLineageSpecs,
+  'standards': renderStandards,
   'agent-config': renderAgentConfig,
   'quality': renderQuality,
   'warehouse-modeling': renderWarehouse,

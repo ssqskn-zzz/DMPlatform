@@ -18,7 +18,7 @@ from dgov.schemas.lineage_insight import (
     AgentEndpointUpdate,
 )
 from dgov.services.agent_client import build_client
-from dgov.services.lineage_spec import DEFAULT_CLAUSES
+from dgov.services.lineage_spec import DEFAULT_RULE_TEXT
 
 router = APIRouter(prefix="/agent-endpoints", tags=["agent-endpoints"])
 
@@ -133,7 +133,7 @@ async def test_endpoint(
     try:
         client = await build_client(endpoint)
         result = await client.test_contract(
-            {"version": "v1", "clauses": list(DEFAULT_CLAUSES), "full_text": ""},
+            {"version": "v1", "full_text": DEFAULT_RULE_TEXT},
             [],
         )
         endpoint.health_status = "ok"

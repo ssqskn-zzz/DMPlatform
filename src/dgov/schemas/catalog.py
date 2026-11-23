@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class DatasetCreate(BaseModel):
@@ -86,9 +86,9 @@ class ColumnRead(BaseModel):
 
 
 class StandardCreate(BaseModel):
-    code: str = Field(min_length=1, max_length=64)
+    code: str | None = Field(default=None, min_length=1, max_length=64)
     name: str = Field(min_length=1, max_length=128)
-    category: str | None = None
+    category: str | None = "general"
     data_type: str = "string"
     rule: str | None = None
     description: str | None = None
@@ -117,5 +117,12 @@ class StandardRead(BaseModel):
     description: str | None
     status: str
     extra: dict[str, Any] | None
+    version: str = "v1"
     created_at: datetime
     updated_at: datetime
+
+    @model_validator(mode="after")
+    def _fill_version(self) -> "StandardRead":
+        if self.extra and self.extra.get("version"):
+            self.version = str(self.extra["version"])
+        return self

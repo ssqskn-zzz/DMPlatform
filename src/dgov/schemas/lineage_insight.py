@@ -64,9 +64,9 @@ class LineageSpecRead(BaseModel):
     version: str
     name: str
     status: str
-    clauses: list[str]
     full_text: str
     category: str
+    updated_at: datetime
 
 
 # ---------- flows ----------

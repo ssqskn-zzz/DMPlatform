@@ -107,7 +107,7 @@ async def parse(
             "violations": sorted(set(violations)),
             "observations": [
                 f"按规范 {payload.spec.version} 将表级血缘映射为任务依赖图",
-                f"收到规范条款 {len(payload.spec.clauses)} 条：" + "；".join(payload.spec.clauses[:3]),
+                f"收到规范全文 {len(payload.spec.full_text or '')} 字",
                 f"共 {len(payload.edges)} 条边、{len(nodes)} 个任务节点",
             ],
         },
@@ -171,7 +171,7 @@ async def diagnose(
                 )
                 break
 
-    if not payload.spec.clauses:
+    if not (payload.spec.full_text or "").strip():
         add(
             code="missing_spec",
             category="missing_spec",

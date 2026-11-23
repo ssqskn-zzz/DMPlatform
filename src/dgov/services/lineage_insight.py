@@ -388,7 +388,6 @@ async def run_flow(
     edge_payloads = [LineageEdgePayload.model_validate(edge) for edge in edges]
     spec_payload = SpecPayload(
         version=spec["version"],
-        clauses=spec["clauses"],
         full_text=spec["full_text"],
     )
     parse_graph = TaskGraph()
@@ -543,7 +542,7 @@ async def run_flow(
                 "detail": {
                     **parse_digest,
                     "spec_version": spec["version"],
-                    "spec_clauses": len(spec["clauses"]),
+                    "spec_chars": len(spec["full_text"]),
                     "edge_count": len(edges),
                     "task_nodes": len(parse_graph.nodes),
                     "task_edges": len(parse_graph.edges),
@@ -612,7 +611,7 @@ async def run_flow(
                     **diagnose_digest,
                     "spec_version": spec["version"],
                     "edge_count": len(edges),
-                    "spec_clauses": len(spec["clauses"]),
+                    "spec_chars": len(spec["full_text"]),
                     "rule_issues": len(rule_issues),
                     "agent_issues": agent_issue_count,
                     "merged_issues": len(merged),
@@ -994,7 +993,7 @@ async def summary(session: AsyncSession) -> dict[str, Any]:
         "alerts": alerts,
         "active_flows": active_flows,
         "spec_version": spec["version"],
-        "spec_clauses": len(spec["clauses"]),
+        "spec_chars": len(spec["full_text"]),
         "by_code": [{"code": code, "count": count} for code, count in by_code],
         "latest_run": None
         if latest is None

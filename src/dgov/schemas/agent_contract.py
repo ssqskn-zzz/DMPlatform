@@ -26,7 +26,6 @@ class LineageEdgePayload(BaseModel):
 
 class SpecPayload(BaseModel):
     version: str = "v1"
-    clauses: list[str] = Field(default_factory=list)
     full_text: str = ""
 
 
